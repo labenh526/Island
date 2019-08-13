@@ -2,6 +2,7 @@ package com.laben.islands;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,13 +16,15 @@ public class IslandGame extends Game {
 
 	private Island currentIsland;
 	private int currentLevel;
+	private AssetManager manager; //Manages all game assets
 
 	SpriteBatch batch;
 	
 	@Override
 	public void create () {
+		manager = new AssetManager();
 		batch = new SpriteBatch();
-		setCurrentIsland(new Island(15));
+		setCurrentIsland(new Island(16));
 		setScreen(new MapViewScreen(this));
 	}
 
@@ -34,6 +37,10 @@ public class IslandGame extends Game {
 	public void dispose () {
 		getScreen().dispose(); //dispose of all disposables in the current screen
 		batch.dispose();
+	}
+
+	public AssetManager getManager() {
+		return manager;
 	}
 
 	public static int getGameWidth() {
