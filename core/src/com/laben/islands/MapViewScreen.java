@@ -4,14 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import jdk.nashorn.internal.runtime.ConsString;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +27,10 @@ public class MapViewScreen implements Screen {
 
     //Pass in the game object
     public MapViewScreen(final IslandGame game) {
-        atlas = new TextureAtlas(Gdx.files.internal(Terrain.MAP_VIEW_ATLAS_PATH));
+        //Load necessary assets to manager
+        game.getManager().load(Terrain.MAP_VIEW_ATLAS_PATH, TextureAtlas.class);
+        game.getManager().finishLoading();
+        atlas = game.getManager().get(Terrain.MAP_VIEW_ATLAS_PATH, TextureAtlas.class);
 
         this.game = game;
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
@@ -56,8 +55,6 @@ public class MapViewScreen implements Screen {
         rootTable.row().height((int)(5.0 / 6.0 * (double)IslandGame.GAME_HEIGHT));
         rootTable.add(mapTable).expand().width((int)(.5 * (double)IslandGame.GAME_WIDTH)).left().
                         padLeft(leftPadding).padTop(topBottomPadding).padBottom(topBottomPadding);
-
-        //
 
 
     }
@@ -102,6 +99,7 @@ public class MapViewScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+        game.getManager().unload(Terrain.MAP_VIEW_ATLAS_PATH);
     }
 
     private Table initializedMapTable() {
