@@ -2,11 +2,15 @@ package com.laben.islands;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import java.util.HashMap;
@@ -24,11 +28,16 @@ public class MapViewScreen implements Screen {
     private Table mapTable;
     private String currentSelectedRegion = null;
     private TextureAtlas atlas;
+    private Map<String, Class> assets;
+    private Label selectedRegionLabel;
 
     //Pass in the game object
     public MapViewScreen(final IslandGame game) {
         //Load necessary assets to manager
-        game.getManager().load(Terrain.MAP_VIEW_ATLAS_PATH, TextureAtlas.class);
+        assets = new HashMap<>();
+        assets.put(Terrain.MAP_VIEW_ATLAS_PATH, TextureAtlas.class);
+        assets.put("Fonts/MapViewRegionName.fnt", BitmapFont.class);
+        IslandGame.loadAllAssets(game.getManager(), assets);
         game.getManager().finishLoading();
         atlas = game.getManager().get(Terrain.MAP_VIEW_ATLAS_PATH, TextureAtlas.class);
 
@@ -49,12 +58,27 @@ public class MapViewScreen implements Screen {
         //Create table map
         mapTable = initializedMapTable();
 
-        //format root table
+        //Create label that states the currently selected reigon
+        Label.LabelStyle regionLabelStyle = new Label.LabelStyle();
+        regionLabelStyle.font = game.getManager().get("Fonts/MapViewRegionName.fnt");
+        regionLabelStyle.fontColor = Color.BLACK;
+        selectedRegionLabel = new Label("Hello\nWorld", regionLabelStyle);
+        float labelWidth = (float)(.27 * (float)IslandGame.GAME_WIDTH);
+        float labelHeight = (float) (1.0 / 3.0 * (float)IslandGame.GAME_HEIGHT);
+        selectedRegionLabel.setSize(labelWidth, labelHeight);
+        selectedRegionLabel.setAlignment(Align.topLeft);
+
+        /* format root table */
+        //Add mapTable
         float leftPadding  = (float)(.1 * (float)IslandGame.GAME_WIDTH);
         float topBottomPadding = (float)(5.0 / 60.0 * (float)IslandGame.GAME_HEIGHT);
-        rootTable.row().height((int)(5.0 / 6.0 * (double)IslandGame.GAME_HEIGHT));
+        rootTable.row().height((float)(5.0 / 6.0 * (float)IslandGame.GAME_HEIGHT));
         rootTable.add(mapTable).expand().width((int)(.5 * (double)IslandGame.GAME_WIDTH)).left().
                         padLeft(leftPadding).padTop(topBottomPadding).padBottom(topBottomPadding);
+        //Add region label
+        rootTable.add(selectedRegionLabel).padRight(topBottomPadding).width(labelWidth);
+
+
 
 
     }
@@ -99,7 +123,7 @@ public class MapViewScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        game.getManager().unload(Terrain.MAP_VIEW_ATLAS_PATH);
+        IslandGame.unloadAllAssets(game.getManager(), assets.keySet());
     }
 
     private Table initializedMapTable() {

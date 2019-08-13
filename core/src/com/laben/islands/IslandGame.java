@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.Collection;
+import java.util.Map;
+
 /** This Class is the main game class which manages the game and is created upon the games initialization
  * 	This class contains all information pertaining to the game's current game state
  **/
@@ -65,5 +68,22 @@ public class IslandGame extends Game {
 
 	public void setCurrentLevel(int currentLevel) {
 		this.currentLevel = currentLevel;
+	}
+
+	/*
+		Input an asset manager to load assets into and a map containing keys which correspond to asset file names
+		and values which correpsond to that asset's class
+	 */
+	public static void loadAllAssets(AssetManager assetManager, Map<String, Class> assets) {
+		for (String asset : assets.keySet())
+			assetManager.load(asset, assets.get(asset));
+	}
+
+	/*
+		Unloads all given assets from manager
+	 */
+	public static void unloadAllAssets(AssetManager assetManager, Collection<String> assets) {
+		for (String asset : assets)
+			assetManager.unload(asset);
 	}
 }
