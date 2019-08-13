@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -30,6 +32,7 @@ public class MapViewScreen implements Screen {
     private TextureAtlas atlas;
     private Map<String, Class> assets;
     private Label selectedRegionLabel;
+    private Map<Image, Region> imageRegionMap; //Maps each image in the island's map to a region
 
     //Pass in the game object
     public MapViewScreen(final IslandGame game) {
@@ -43,9 +46,10 @@ public class MapViewScreen implements Screen {
 
         this.game = game;
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
+        Gdx.input.setInputProcessor(stage);
         //Add map background
         Image mapBackground = new Image(atlas.findRegion("backomap"));
-        mapBackground.setPosition((float)(0.07 * (float)IslandGame.GAME_WIDTH), (float)(.2/6.0 * (float)IslandGame.GAME_HEIGHT));
+        mapBackground.setPosition((0.02f * (float)IslandGame.GAME_WIDTH), (float)(.2/6.0 * (float)IslandGame.GAME_HEIGHT));
         mapBackground.setSize((float)(.56* (float)IslandGame.GAME_WIDTH), (float)(.56* (float)IslandGame.GAME_WIDTH));
         stage.addActor(mapBackground);
 
@@ -62,23 +66,21 @@ public class MapViewScreen implements Screen {
         Label.LabelStyle regionLabelStyle = new Label.LabelStyle();
         regionLabelStyle.font = game.getManager().get("Fonts/MapViewRegionName.fnt");
         regionLabelStyle.fontColor = Color.BLACK;
-        selectedRegionLabel = new Label("Hello\nWorld", regionLabelStyle);
-        float labelWidth = (float)(.27 * (float)IslandGame.GAME_WIDTH);
+        selectedRegionLabel = new Label("", regionLabelStyle);
+        float labelWidth = (float)(.38 * (float)IslandGame.GAME_WIDTH);
         float labelHeight = (float) (1.0 / 3.0 * (float)IslandGame.GAME_HEIGHT);
         selectedRegionLabel.setSize(labelWidth, labelHeight);
         selectedRegionLabel.setAlignment(Align.topLeft);
 
         /* format root table */
         //Add mapTable
-        float leftPadding  = (float)(.1 * (float)IslandGame.GAME_WIDTH);
+        float leftPadding  = (.05f * (float)IslandGame.GAME_WIDTH);
         float topBottomPadding = (float)(5.0 / 60.0 * (float)IslandGame.GAME_HEIGHT);
         rootTable.row().height((float)(5.0 / 6.0 * (float)IslandGame.GAME_HEIGHT));
-        rootTable.add(mapTable).expand().width((int)(.5 * (double)IslandGame.GAME_WIDTH)).left().
-                        padLeft(leftPadding).padTop(topBottomPadding).padBottom(topBottomPadding);
+        rootTable.add(mapTable).expand().width((float)(.5 * (double)IslandGame.GAME_WIDTH)).
+                        padLeft(leftPadding).padTop(topBottomPadding).padBottom(topBottomPadding).left();
         //Add region label
-        rootTable.add(selectedRegionLabel).padRight(topBottomPadding).width(labelWidth);
-
-
+        rootTable.add(selectedRegionLabel).padRight(topBottomPadding / 3.0f).width(labelWidth).left();
 
 
     }
@@ -141,7 +143,9 @@ public class MapViewScreen implements Screen {
         for (List<Region> row : regionMap) {
             //Iterate through each tile in row's region
             for (Region region : row) {
-                table.add(new Image(terrainAtlasRegionMap.get(region.getTerrain()))).uniform().expand().fill();
+                Image image = new Image(terrainAtlasRegionMap.get(region.getTerrain()));
+                addInputListenerToMapTile(image, region);
+                table.add(image).uniform().expand().fill();
                 colNum++;
             }
             table.row();
@@ -152,7 +156,7 @@ public class MapViewScreen implements Screen {
 
     //All elements of the screen to be graphically rendered
     private void renderGraphics() {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor((float)(204/255.0), 0, (float)(102/255.0), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.draw();
 
@@ -161,5 +165,39 @@ public class MapViewScreen implements Screen {
     //All non graphical elements to be rendered - such as changes in game state
     private void executeScripts() {
 
+    }
+
+    public String getCurrentSelectedRegion() {
+        return currentSelectedRegion;
+    }
+
+    public void setCurrentSelectedRegion(String currentSelectedRegion) {
+        this.currentSelectedRegion = currentSelectedRegion;
+        //Change label's text
+        String[] twoPartsOfName = currentSelectedRegion.split("\\s+");
+        StringBuilder splitUpName = new StringBuilder(twoPartsOfName[0]);
+        splitUpName.append("\n");
+        splitUpName.append(twoPartsOfName[1]);
+        getSelectedRegionLabel().setText(splitUpName);
+    }
+
+    public Label getSelectedRegionLabel() {
+        return selectedRegionLabel;
+    }
+
+    private void addInputListenerToMapTile(Image mapTile, final Region region) {
+
+        mapTile.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                setCurrentSelectedRegion(region.toString());
+            }
+        });
     }
 }
