@@ -1,0 +1,54 @@
+
+MapViewTextures.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+backomap
+  rotate: false
+  xy: 1, 1
+  size: 112, 112
+  orig: 112, 112
+  offset: 0, 0
+  index: -1
+Desert
+  rotate: false
+  xy: 115, 81
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Jungle
+  rotate: false
+  xy: 115, 47
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Plains
+  rotate: false
+  xy: 149, 81
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Swamp
+  rotate: false
+  xy: 115, 13
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Tundra
+  rotate: false
+  xy: 149, 47
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Woods
+  rotate: false
+  xy: 183, 81
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
