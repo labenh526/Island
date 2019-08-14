@@ -6,21 +6,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 /** This is the screen that shows when viewing a map
  * **/
@@ -187,14 +184,14 @@ public class MapViewScreen implements Screen {
             for (int y = 0; y < numMap[0].length; y++) {
                 //If this is the currently selected region, then draw border lines
                 if (currentSelectedRegion.equals(integerRegionConversionChart.get(numMap[x][y]).toString())) {
-                    addTileOutline(new Point(x, y));
+                    addTileOutline(new GridPoint2(x, y));
                 }
             }
         }
     }
 
     //Adds outline to a specific tile on the map
-    private void addTileOutline(Point tileGridLocation) {
+    private void addTileOutline(GridPoint2 tileGridLocation) {
         int x = tileGridLocation.x;
         int y = tileGridLocation.y;
         int[][] numMap = getGame().getCurrentIsland().getIterableRegionMap().getNumericalMap();
@@ -224,7 +221,7 @@ public class MapViewScreen implements Screen {
     }
 
     //Adds a vertical line image at the given point on the graph. isLeft determines which side to add it to
-    private void addVerticalLine(Point pointOnGraph, boolean isLeft, BitSet outlineLocations) {
+    private void addVerticalLine(GridPoint2 pointOnGraph, boolean isLeft, BitSet outlineLocations) {
         Image line = new Image(atlas.findRegion("RegionOutlineVertical"));
         currentShowingOutlines.add(line);
         stage.addActor(line);
@@ -245,7 +242,7 @@ public class MapViewScreen implements Screen {
     }
 
     //Adds a horizontal line image at the given point on the graph. isTop determines which side to add it to
-    private void addHorizontalLine(Point pointOnGraph, boolean isTop, BitSet outlineLocations) {
+    private void addHorizontalLine(GridPoint2 pointOnGraph, boolean isTop, BitSet outlineLocations) {
         Image line = new Image(atlas.findRegion("RegionOutlineHorizontal"));
         currentShowingOutlines.add(line);
         stage.addActor(line);

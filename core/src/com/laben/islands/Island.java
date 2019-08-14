@@ -1,6 +1,7 @@
 package com.laben.islands;
 
-import java.awt.*;
+import com.badlogic.gdx.math.GridPoint2;
+
 import java.util.List;
 import java.util.*;
 
@@ -15,7 +16,7 @@ public class Island {
     private static final int MAX_ISLAND_SIDE_SIZE = 20;
 
     private Tile[][] tileSet; //The set of tiles. First number is width value (x), second is height (y)
-    private Point treasureLocation; //The location of the treasure
+    private GridPoint2 treasureLocation; //The location of the treasure
     private final int width; //the width in tiles of the island
     private final int height; //the height in tiles of the island
     private IterableRegionMap iterableRegionMap;
@@ -58,7 +59,7 @@ public class Island {
         for (int x = 0; x < getIterableRegionMap().getNumericalMap().length; x++) {
             for (int y = 0; y < getIterableRegionMap().getNumericalMap()[0].length; y++) {
                 tileSet[x][y] = new Tile(getIterableRegionMap().getRegionIntegerConversionChart().get(
-                        getIterableRegionMap().getNumericalMap()[x][y]), this, new Point(x, y), level);
+                        getIterableRegionMap().getNumericalMap()[x][y]), this, new GridPoint2(x, y), level);
             }
         }
 
@@ -72,7 +73,7 @@ public class Island {
         return height;
     }
 
-    public Point getTreasureLocation() {
+    public GridPoint2 getTreasureLocation() {
         return treasureLocation;
     }
 
@@ -81,13 +82,13 @@ public class Island {
     }
 
     //Removes the treasure from its current location and moves it to the specified point
-    public void changeTreasureLocation(Point treasureLocation) {
+    public void changeTreasureLocation(GridPoint2 treasureLocation) {
         tileAtPoint(getTreasureLocation()).setHasTreasure(false);
         tileAtPoint(treasureLocation).setHasTreasure(true);
         this.treasureLocation = treasureLocation;
     }
 
-    public Tile tileAtPoint(Point point) {
+    public Tile tileAtPoint(GridPoint2 point) {
         return tileSet[point.x][point.y];
     }
 
@@ -137,7 +138,7 @@ public class Island {
                     adjacencyMap.put(map[x][y], new HashSet<Integer>());
                 }
                 //Check surrounding points and add any to set
-                adjacencyMap.get(map[x][y]).addAll(adjacentRegionsToPoint(map, new Point(x, y)));
+                adjacencyMap.get(map[x][y]).addAll(adjacentRegionsToPoint(map, new GridPoint2(x, y)));
             }
         }
         return adjacencyMap;
@@ -148,22 +149,22 @@ public class Island {
         //Uses Voronoi Diagram
         int[][] map = new int[width][height]; //All points on grid default to 0
         //Step 1: Select random points on the grid
-        Set<Point> vPoints = randomVPoints(width, height, numRegions);
+        Set<GridPoint2> vPoints = randomVPoints(width, height, numRegions);
         //Step 2: Assign those points to a unique non 0 value
         int count = 1;
-        for (Point point : vPoints)
-            map[(int)point.getX()][(int)point.getY()] = count++;
+        for (GridPoint2 point : vPoints)
+            map[point.x][point.y] = count++;
         //Step 3: Assign all points on grid to closest v point
         return completeVoronoiMap(map, vPoints);
     }
 
     //Given a grid with specified non 0 Voronoi points, fills out the entire grid as Voronoi diagram
-    private static int[][] completeVoronoiMap(int[][] map, Set<Point> vPoints) {
+    private static int[][] completeVoronoiMap(int[][] map, Set<GridPoint2> vPoints) {
         for (int x = 0; x < map.length; x++) {
             for (int y = 0; y < map[0].length; y++) {
-                if (!vPoints.contains(new Point(x, y))) { //If its not a V Point
-                    Point closestPoint = closestPoint(new Point(x, y), vPoints);
-                    map[x][y] = map[(int)closestPoint.getX()][(int)closestPoint.getY()];
+                if (!vPoints.contains(new GridPoint2(x, y))) { //If its not a V Point
+                    GridPoint2 closestPoint = closestPoint(new GridPoint2(x, y), vPoints);
+                    map[x][y] = map[closestPoint.x][closestPoint.y];
                 }
             }
         }
@@ -174,8 +175,8 @@ public class Island {
     private static int[][] numMapWithoutLonePoints(int[][] map) {
         for (int x = 0; x < map.length; x++) {
             for (int y = 0; y < map[0].length; y++) {
-                if (pointIsAlone(map, new Point(x, y))) {
-                    map[x][y] = randomAdjacentValueInNumMap(map, new Point(x, y));
+                if (pointIsAlone(map, new GridPoint2(x, y))) {
+                    map[x][y] = randomAdjacentValueInNumMap(map, new GridPoint2(x, y));
                 }
             }
         }
@@ -183,7 +184,7 @@ public class Island {
     }
 
     //Returns whether or not the point is alone
-    private static boolean pointIsAlone(int[][] map, Point point) {
+    private static boolean pointIsAlone(int[][] map, GridPoint2 point) {
         int x = point.x;
         int y = point.y;
         int value = map[x][y];
@@ -197,7 +198,7 @@ public class Island {
     }
 
     //Returns a random adjacent value in a num map
-    private static int randomAdjacentValueInNumMap(int[][] map, Point point) {
+    private static int randomAdjacentValueInNumMap(int[][] map, GridPoint2 point) {
         int x = point.x;
         int y = point.y;
         Random random = new Random();
@@ -214,13 +215,13 @@ public class Island {
     }
 
     //returns a set of randomly determined v (Voronoi) points given the dimensions of a map
-    private static Set<Point> randomVPoints(int width, int height, int numVPoints) {
-        Set<Point> points = new HashSet<>();
+    private static Set<GridPoint2> randomVPoints(int width, int height, int numVPoints) {
+        Set<GridPoint2> points = new HashSet<>();
         Random random = new Random();
         for (int i = 0; i < numVPoints; i++) {
-            Point vPoint = new Point(); //the special point on the voronoi diagram
+            GridPoint2 vPoint = new GridPoint2(); //the special point on the voronoi diagram
             do {
-                vPoint.setLocation(random.nextInt(width), random.nextInt(height));
+                vPoint.set(random.nextInt(width), random.nextInt(height));
             } while (points.contains(vPoint));
             points.add(vPoint);
         }
@@ -228,16 +229,16 @@ public class Island {
     }
 
     //returns the distance between two points
-    private static double distanceBetweenPoints(Point a, Point b) {
-        return Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getY() - b.getY(), 2));
+    private static double distanceBetweenPoints(GridPoint2 a, GridPoint2 b) {
+        return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
     }
 
     //Given a specific point and a set of points, returns the closest point, randomly deciding in ties
-    private static Point closestPoint(Point specificPoint, Set<Point> points) {
+    private static GridPoint2 closestPoint(GridPoint2 specificPoint, Set<GridPoint2> points) {
         double distance = Double.POSITIVE_INFINITY;
         Random random = new Random();
-        List<Point> possibleClosestPoints = new ArrayList<>();
-        for (Point farPoint : points) {
+        List<GridPoint2> possibleClosestPoints = new ArrayList<>();
+        for (GridPoint2 farPoint : points) {
             if (distanceBetweenPoints(specificPoint, farPoint) < distance) {
                 possibleClosestPoints.clear();
                 possibleClosestPoints.add(farPoint);
@@ -250,17 +251,17 @@ public class Island {
     }
 
     //Given a numerically defined map and a point on that map, returns all regions adjacent to that point
-    private static Set<Integer> adjacentRegionsToPoint(int[][] map, Point point) {
+    private static Set<Integer> adjacentRegionsToPoint(int[][] map, GridPoint2 point) {
         Set<Integer> adjacentRegions = new HashSet<>();
-        try { adjacentRegions.add(map[(int) (point.getX() + 1)][(int) (point.getY())]); }
+        try { adjacentRegions.add(map[point.x + 1][point.y]); }
         catch (IndexOutOfBoundsException e) {}
-        try {adjacentRegions.add(map[(int) (point.getX() - 1)][(int) (point.getY())]); }
+        try {adjacentRegions.add(map[point.x - 1][point.y]); }
         catch (IndexOutOfBoundsException e) {}
-        try {adjacentRegions.add(map[(int) (point.getX())][(int) (point.getY() + 1)]); }
+        try {adjacentRegions.add(map[point.x][point.y + 1]); }
         catch (IndexOutOfBoundsException e) {}
-        try {adjacentRegions.add(map[(int) (point.getX())][(int) (point.getY() - 1)]); }
+        try {adjacentRegions.add(map[point.x][point.y - 1]); }
         catch (IndexOutOfBoundsException e) {}
-        adjacentRegions.remove(map[(int)point.getX()][(int)point.getY()]);
+        adjacentRegions.remove(map[point.x][point.y]);
         return adjacentRegions;
     }
 

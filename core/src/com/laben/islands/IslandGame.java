@@ -1,13 +1,9 @@
 package com.laben.islands;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.GridPoint2;
 
-import java.awt.*;
 import java.util.Collection;
 import java.util.Map;
 
@@ -45,7 +41,7 @@ public class IslandGame extends Game {
 	public void setStartingPos() {
 		int x = (getCurrentIsland().getWidth() - 1)/ 2;
 		int y = getCurrentIsland().getHeight() - 1;
-		setCurrentTile(getCurrentIsland().tileAtPoint(new Point(x, y)));
+		setCurrentTile(getCurrentIsland().tileAtPoint(new GridPoint2(x, y)));
 	}
 
 	public AssetManager getManager() {
