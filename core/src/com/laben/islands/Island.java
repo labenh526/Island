@@ -54,6 +54,14 @@ public class Island {
                 successfulMapGenerated = false;
             }
         } while (!successfulMapGenerated);
+        //create tiles
+        for (int x = 0; x < getIterableRegionMap().getNumericalMap().length; x++) {
+            for (int y = 0; y < getIterableRegionMap().getNumericalMap()[0].length; y++) {
+                tileSet[x][y] = new Tile(getIterableRegionMap().getRegionIntegerConversionChart().get(
+                        getIterableRegionMap().getNumericalMap()[x][y]), this, new Point(x, y), level);
+            }
+        }
+
     }
 
     public int getWidth() {
@@ -80,7 +88,7 @@ public class Island {
     }
 
     public Tile tileAtPoint(Point point) {
-        return tileSet[(int)point.getX()][(int)point.getY()];
+        return tileSet[point.x][point.y];
     }
 
     //returns from a list of Integers representing regions from largest to smallest

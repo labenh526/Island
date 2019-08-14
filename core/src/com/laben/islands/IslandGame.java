@@ -26,8 +26,8 @@ public class IslandGame extends Game {
 	@Override
 	public void create () {
 		manager = new AssetManager();
-		setCurrentTile(new Tile(null, null, new Point(11, 2), 1));
 		setCurrentIsland(new Island(69));
+		setStartingPos();
 		setScreen(new MapViewScreen(this));
 	}
 
@@ -39,6 +39,13 @@ public class IslandGame extends Game {
 	@Override
 	public void dispose () {
 		getScreen().dispose(); //dispose of all disposables in the current screen
+	}
+
+	//Sets the the player's starting position in the middle of the bottom row
+	public void setStartingPos() {
+		int x = (getCurrentIsland().getWidth() - 1)/ 2;
+		int y = getCurrentIsland().getHeight() - 1;
+		setCurrentTile(getCurrentIsland().tileAtPoint(new Point(x, y)));
 	}
 
 	public AssetManager getManager() {
@@ -93,4 +100,5 @@ public class IslandGame extends Game {
 		for (String asset : assets)
 			assetManager.unload(asset);
 	}
+
 }
