@@ -22,6 +22,7 @@ public class IslandGame extends Game {
 	private AssetManager manager; //Manages all game assets
 	private Tile currentTile; //The current tile that the player is on
 	private Application.ApplicationType platform;
+	private Player player;
 	
 	@Override
 	public void create () {
@@ -32,6 +33,9 @@ public class IslandGame extends Game {
 		GAME_HEIGHT = Application.ApplicationType.Android.equals(Gdx.app.getType()) ? 640 : 480;
 
 		manager = new AssetManager();
+		//create player
+		player = new Player();
+		player.setStamina(39);
 		setCurrentIsland(new Island(69));
 		setStartingPos();
 		setScreen(new MapViewScreen(this));
@@ -99,6 +103,10 @@ public class IslandGame extends Game {
 
 	public Tile getCurrentTile() {
 		return currentTile;
+	}
+
+	public Player getPlayer() {
+		return player;
 	}
 
 	public Application.ApplicationType getPlatform() {
