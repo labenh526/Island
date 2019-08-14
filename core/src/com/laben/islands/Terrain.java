@@ -5,12 +5,12 @@ import java.util.*;
 /** Represents the terrain and its properties**/
 public class Terrain {
 
-    public static final Terrain WOODS = new Terrain("Woods", 1);
-    public static final Terrain DESERT = new Terrain("Desert", 4);
-    public static final Terrain PLAINS = new Terrain("Plains", 1);
-    public static final Terrain TUNDRA = new Terrain("Tundra", 24);
-    public static final Terrain SWAMP = new Terrain("Swamp", 14);
-    public static final Terrain JUNGLE = new Terrain("Jungle", 34);
+    public static final Terrain WOODS = new Terrain("Woods", 1, "WoodsBackground");
+    public static final Terrain DESERT = new Terrain("Desert", 4, "DesertBackground");
+    public static final Terrain PLAINS = new Terrain("Plains", 1, "PlainsBackground");
+    public static final Terrain TUNDRA = new Terrain("Tundra", 24, "TundraBackground");
+    public static final Terrain SWAMP = new Terrain("Swamp", 14, "SwampBackground");
+    public static final Terrain JUNGLE = new Terrain("Jungle", 34, "JungleBackground");
 
     public static final Set<Terrain> TERRAIN_SET = new HashSet<>(Arrays.asList(
             WOODS, DESERT, PLAINS, TUNDRA, SWAMP, JUNGLE));
@@ -20,10 +20,12 @@ public class Terrain {
 
     private final String name; //The text representation of the terrain
     private final int startingLevel; //The level in which this terrain has an equal chance of being randomly selected
+    private final String backgroundImage; //The background image used when drawing the Game Screen
 
-    private Terrain(String name, int startingLevel) {
+    private Terrain(String name, int startingLevel, String backgroundImage) {
         this.name = name;
         this.startingLevel = startingLevel;
+        this.backgroundImage = backgroundImage;
     }
 
     @Override
@@ -48,6 +50,10 @@ public class Terrain {
     //Given the current level, will determine a random terrain
     public static Terrain randomTerrain(int level) {
         return randomTerrain(level, new HashSet<Terrain>());
+    }
+
+    public String getBackgroundImage() {
+        return backgroundImage;
     }
 
     //Given the current level and a set of illegal terrain options, returns a random terrain
