@@ -6,18 +6,21 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Layout;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.util.HashMap;
+import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 /** This is the screen that shows when viewing a map
  * **/
@@ -32,10 +35,12 @@ public class MapViewScreen implements Screen {
     private TextureAtlas atlas;
     private Map<String, Class> assets;
     private Label selectedRegionLabel;
-    private Map<Image, Region> imageRegionMap; //Maps each image in the island's map to a region
+    private Set<Image> currentShowingOutlines;
 
     //Pass in the game object
     public MapViewScreen(final IslandGame game) {
+        currentShowingOutlines = new HashSet<>();
+
         //Load necessary assets to manager
         assets = new HashMap<>();
         assets.put(Terrain.MAP_VIEW_ATLAS_PATH, TextureAtlas.class);
@@ -82,7 +87,22 @@ public class MapViewScreen implements Screen {
         //Add region label
         rootTable.add(selectedRegionLabel).padRight(topBottomPadding / 3.0f).width(labelWidth).left();
 
+        rootTable.validate();
+        mapTable.validate();
 
+        //Add current location marker
+        Image redDot = new Image(atlas.findRegion("reddot"));
+        redDot.setSize(mapTable.getColumnWidth(0), mapTable.getRowHeight(0));
+        float xStartPos = mapTable.localToStageCoordinates(new Vector2(0, 0)).x;
+        float yStartPos = mapTable.localToStageCoordinates(new Vector2(0, 0)).y;
+        float xMod = mapTable.getWidth() / (float)mapTable.getColumns() * (float)getGame().getCurrentTile()
+                .getCoordinates().x;
+        float yMod = mapTable.getHeight() / (float)mapTable.getRows() *
+                ((float)mapTable.getRows() - 1 - (float)getGame().getCurrentTile().getCoordinates().y);
+        redDot.setPosition(xStartPos + xMod, yStartPos + yMod);
+        addInputListenerToMapTile(redDot, getGame().getCurrentTile().getRegion());
+        stage.addActor(redDot);
+        redDot.toFront();
     }
 
     public IslandGame getGame() {
@@ -154,17 +174,115 @@ public class MapViewScreen implements Screen {
         return table;
     }
 
+    //Adds image actors which draw an outline over the currently selected region
+    private void addSelectedRegionOutline() {
+        //Remove all previous
+        for (Image image: currentShowingOutlines)
+            image.remove();
+        currentShowingOutlines.clear();
+        int[][] numMap = getGame().getCurrentIsland().getIterableRegionMap().getNumericalMap();
+        Map<Integer, Region> integerRegionConversionChart = getGame().getCurrentIsland().getIterableRegionMap().getRegionIntegerConversionChart();
+        //Iterate through every tile in map
+        for (int x = 0; x < numMap.length; x++) {
+            for (int y = 0; y < numMap[0].length; y++) {
+                //If this is the currently selected region, then draw border lines
+                if (currentSelectedRegion.equals(integerRegionConversionChart.get(numMap[x][y]).toString())) {
+                    addTileOutline(new Point(x, y));
+                }
+            }
+        }
+    }
+
+    //Adds outline to a specific tile on the map
+    private void addTileOutline(Point tileGridLocation) {
+        int x = tileGridLocation.x;
+        int y = tileGridLocation.y;
+        int[][] numMap = getGame().getCurrentIsland().getIterableRegionMap().getNumericalMap();
+        int value = numMap[x][y];
+        //Determine which sides of the tile need the outline
+        BitSet outlineLocations = new BitSet(4); //outline locations represented via binary: top, right, bottom, left
+        //If right needs outline:
+        if (x == numMap.length - 1 || numMap[x + 1][y] != value) {
+            outlineLocations.set(1);
+            addVerticalLine(tileGridLocation, false, outlineLocations);
+        }
+        //If left needs outline:
+        if (x == 0 || numMap[x - 1][y] != value) {
+            outlineLocations.set(3);
+            addVerticalLine(tileGridLocation, true, outlineLocations);
+        }
+        //If top needs outline:
+        if (y == 0 || numMap[x][y - 1] != value) {
+            outlineLocations.set(0);
+            addHorizontalLine(tileGridLocation, true, outlineLocations);
+        }
+        //If bottom needs outline:
+        if (y == numMap[0].length - 1 || numMap[x][y + 1] != value) {
+            outlineLocations.set(2);
+            addHorizontalLine(tileGridLocation, false, outlineLocations);
+        }
+    }
+
+    //Adds a vertical line image at the given point on the graph. isLeft determines which side to add it to
+    private void addVerticalLine(Point pointOnGraph, boolean isLeft, BitSet outlineLocations) {
+        Image line = new Image(atlas.findRegion("RegionOutlineVertical"));
+        currentShowingOutlines.add(line);
+        stage.addActor(line);
+        line.toFront();
+        line.setSize(mapTable.getRowHeight(0) * line.getWidth() / line.getHeight(),
+                mapTable.getRowHeight(0));
+        float startingXPos = mapTable.localToStageCoordinates(new Vector2(0, 0)).x;
+        float startingYPos = mapTable.localToStageCoordinates(new Vector2(0, 0)).y;
+        //x mod = width of each cell * (graph point x (+ 1 if on right), then if on right subtract width of line
+        float xMod = mapTable.getWidth() / (float)mapTable.getColumns() * ((float)pointOnGraph.x + (isLeft ?  0f : 1f));
+        if (!isLeft)
+            xMod -= line.getWidth();
+        //y mod calculation is mostly the same, except it accounts for the libgdx (0,0) in bottom left and fixed spot
+        float yMod = mapTable.getHeight() / (float)mapTable.getRows() *
+                ((float)mapTable.getRows() - 1 - (float)pointOnGraph.y);
+
+        line.setPosition(startingXPos + xMod, startingYPos + yMod);
+    }
+
+    //Adds a horizontal line image at the given point on the graph. isTop determines which side to add it to
+    private void addHorizontalLine(Point pointOnGraph, boolean isTop, BitSet outlineLocations) {
+        Image line = new Image(atlas.findRegion("RegionOutlineHorizontal"));
+        currentShowingOutlines.add(line);
+        stage.addActor(line);
+        line.toFront();
+        line.setSize(mapTable.getColumnWidth(0),
+                mapTable.getColumnWidth(0) * line.getHeight() / line.getWidth());
+        float startingXPos = mapTable.localToStageCoordinates(new Vector2(0, 0)).x;
+        float startingYPos = mapTable.localToStageCoordinates(new Vector2(0, 0)).y;
+        //calculate xmod
+        float xMod = mapTable.getWidth() / (float)mapTable.getColumns() * (float)pointOnGraph.x;
+        //calculate ymod
+        float yMod = mapTable.getHeight() / (float)mapTable.getRows() *
+                ((float)mapTable.getRows() - 1 - (float)pointOnGraph.y + (isTop ? 1 : 0));
+        //Adjust size to remove gaps in corners of outlines:
+        //If no border to right
+        if (!outlineLocations.get(1))
+            line.setSize(line.getWidth() + line.getHeight(), line.getHeight());
+        //If no border to left
+        if (!outlineLocations.get(3)) {
+            line.setSize(line.getWidth() + line.getHeight(), line.getHeight());
+            xMod -= line.getHeight();
+        }
+        if (isTop)
+            yMod -= line.getHeight();
+
+        line.setPosition(startingXPos + xMod, startingYPos + yMod);
+    }
+
     //All elements of the screen to be graphically rendered
     private void renderGraphics() {
         Gdx.gl.glClearColor((float)(204/255.0), 0, (float)(102/255.0), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.draw();
-
     }
 
     //All non graphical elements to be rendered - such as changes in game state
     private void executeScripts() {
-
     }
 
     public String getCurrentSelectedRegion() {
@@ -179,6 +297,7 @@ public class MapViewScreen implements Screen {
         splitUpName.append("\n");
         splitUpName.append(twoPartsOfName[1]);
         getSelectedRegionLabel().setText(splitUpName);
+        addSelectedRegionOutline();
     }
 
     public Label getSelectedRegionLabel() {
