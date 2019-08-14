@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.awt.*;
 import java.util.Collection;
 import java.util.Map;
 
@@ -20,14 +21,13 @@ public class IslandGame extends Game {
 	private Island currentIsland;
 	private int currentLevel;
 	private AssetManager manager; //Manages all game assets
-
-	SpriteBatch batch;
+	private Tile currentTile; //The current tile that the player is on
 	
 	@Override
 	public void create () {
 		manager = new AssetManager();
-		batch = new SpriteBatch();
-		setCurrentIsland(new Island(16));
+		setCurrentTile(new Tile(null, null, new Point(11, 2), 1));
+		setCurrentIsland(new Island(69));
 		setScreen(new MapViewScreen(this));
 	}
 
@@ -39,7 +39,6 @@ public class IslandGame extends Game {
 	@Override
 	public void dispose () {
 		getScreen().dispose(); //dispose of all disposables in the current screen
-		batch.dispose();
 	}
 
 	public AssetManager getManager() {
@@ -70,10 +69,18 @@ public class IslandGame extends Game {
 		this.currentLevel = currentLevel;
 	}
 
+	public void setCurrentTile(Tile currentTile) {
+		this.currentTile = currentTile;
+	}
+
+	public Tile getCurrentTile() {
+		return currentTile;
+	}
+
 	/*
-		Input an asset manager to load assets into and a map containing keys which correspond to asset file names
-		and values which correpsond to that asset's class
-	 */
+          Input an asset manager to load assets into and a map containing keys which correspond to asset file names
+          and values which correpsond to that asset's class
+        */
 	public static void loadAllAssets(AssetManager assetManager, Map<String, Class> assets) {
 		for (String asset : assets.keySet())
 			assetManager.load(asset, assets.get(asset));
