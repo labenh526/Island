@@ -34,7 +34,7 @@ public class IslandGame extends Game {
 		manager = new AssetManager();
 		setCurrentIsland(new Island(69));
 		setStartingPos();
-		setScreen(new GameScreen(this, getCurrentTile()));
+		setScreen(new MapViewScreen(this));
 	}
 
 	@Override
@@ -58,6 +58,11 @@ public class IslandGame extends Game {
 	public void loadMapViewScreen() {
 		getScreen().dispose();
 		setScreen(new MapViewScreen(this));
+	}
+
+	public void loadGameScreen() {
+		getScreen().dispose();
+		setScreen(new GameScreen(this, getCurrentTile()));
 	}
 
 	public AssetManager getManager() {

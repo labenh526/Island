@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -73,6 +74,23 @@ public class MapViewScreen implements Screen {
         float labelHeight = (float) (1.0 / 3.0 * (float)IslandGame.GAME_HEIGHT);
         selectedRegionLabel.setSize(labelWidth, labelHeight);
         selectedRegionLabel.setAlignment(Align.topLeft);
+
+        //Create back arrow image
+        Image backArrow = new Image(atlas.findRegion("backarrow"));
+        backArrow.setSize(.15f * (float)IslandGame.getGameWidth(), .15f * (float)IslandGame.getGameWidth());
+        backArrow.setPosition(.7f * (float)IslandGame.getGameWidth(), 1f / 6f * (float)IslandGame.getGameHeight());
+        backArrow.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                game.loadGameScreen();
+            }
+        });
+        stage.addActor(backArrow);
 
         /* format root table */
         //Add mapTable
