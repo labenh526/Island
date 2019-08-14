@@ -281,8 +281,12 @@ public class Island {
         private List<List<Region>> rowList;
         private final int numRows;
         private final int numColumns;
+        private final int[][] numericalMap;
+        private final Map<Integer, Region> regionIntegerConversionChart;
 
         IterableRegionMap(int[][] mapData, Map<Integer, Region> regionIntegerConversionChart) {
+            numericalMap = mapData;
+            this.regionIntegerConversionChart = regionIntegerConversionChart;
             numRows = mapData[0].length;
             numColumns = mapData.length;
             //initialize the list of rows
@@ -293,6 +297,14 @@ public class Island {
                     currentRow.add(regionIntegerConversionChart.get(mapData[x][y]));
                 rowList.add(currentRow);
             }
+        }
+
+        public int[][] getNumericalMap() {
+            return numericalMap;
+        }
+
+        public Map<Integer, Region> getRegionIntegerConversionChart() {
+            return regionIntegerConversionChart;
         }
 
         public int getNumRows() {
