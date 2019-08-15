@@ -3,65 +3,121 @@ GameScreenTextures.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+reddot
+  rotate: false
+  xy: 1, 137
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 DesertBackground
   rotate: false
-  xy: 1, 15
+  xy: 1, 103
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+DesertMap
+  rotate: false
+  xy: 259, 361
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 JungleBackground
   rotate: false
-  xy: 35, 15
+  xy: 1, 69
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+JungleMap
+  rotate: false
+  xy: 35, 103
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+MiniMapBackground
+  rotate: false
+  xy: 259, 327
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 PlainsBackground
   rotate: false
-  xy: 69, 15
+  xy: 293, 361
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+PlainsMap
+  rotate: false
+  xy: 1, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 SwampBackground
   rotate: false
-  xy: 103, 15
+  xy: 35, 69
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+SwampMap
+  rotate: false
+  xy: 69, 103
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 TundraBackground
   rotate: false
-  xy: 137, 15
+  xy: 259, 293
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+TundraMap
+  rotate: false
+  xy: 293, 327
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 WoodsBackground
   rotate: false
-  xy: 171, 15
+  xy: 327, 361
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+WoodsMap
+  rotate: false
+  xy: 1, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 GreyStaminaBackground
   rotate: false
-  xy: 1, 8
+  xy: 35, 62
   size: 32, 5
   orig: 32, 5
   offset: 0, 0
   index: -1
 StaminaBackground
   rotate: false
-  xy: 205, 42
+  xy: 69, 96
   size: 32, 5
   orig: 32, 5
   offset: 0, 0
   index: -1
 StaminaBar
   rotate: false
-  xy: 1, 1
+  xy: 103, 130
   size: 32, 5
   orig: 32, 5
   offset: 0, 0

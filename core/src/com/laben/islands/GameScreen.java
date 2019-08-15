@@ -7,6 +7,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -16,6 +19,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameScreen implements Screen {
@@ -34,6 +38,7 @@ public class GameScreen implements Screen {
         this.game = game;
         this.tile = tile;
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
+        Gdx.input.setInputProcessor(stage);
 
         //Load assets
         assets = new HashMap<>();
@@ -100,12 +105,37 @@ public class GameScreen implements Screen {
         greyStaminaBackground.setPosition(staminaBar.getX(), staminaBar.getY());
         greyStaminaBackground.setSize(maxStaminaWidth, staminaBar.getHeight());
         stage.addActor(greyStaminaBackground);
-    }
 
-    public Table initializeGameTable() {
-        Table table = new Table();
-        table.setBackground(new TextureRegionDrawable(atlas.findRegion(tile.getRegion().getTerrain().getBackgroundImage())));
-        return table;
+        //Create mini map bg
+        Image miniMapBackground = new Image(atlas.findRegion("MiniMapBackground"));
+        miniMapBackground.setPosition(staminaBackground.getX(), staminaBackground.getY() -
+                .05f * IslandGame.getGameHeight() - staminaBackground.getWidth());
+        miniMapBackground.setSize(staminaBackground.getWidth(), staminaBackground.getWidth());
+        stage.addActor(miniMapBackground);
+
+        //Create mini map
+        miniMapBackground.validate();
+        Table miniMap = initializedMiniMapTable();
+        miniMap.setPosition(miniMapBackground.getX() + miniMapBackground.getWidth() * .025f,
+                miniMapBackground.getY() + miniMapBackground.getWidth() * .025f);
+        miniMap.setSize(miniMapBackground.getWidth() * .95f, miniMapBackground.getWidth() * .95f);
+        stage.addActor(miniMap);
+        miniMap.toFront();
+
+        //Add current location marker to mini map
+        miniMap.validate();
+        Image redDot = new Image(atlas.findRegion("reddot"));
+        redDot.setSize(miniMap.getColumnWidth(0), miniMap.getRowHeight(0));
+        float xStartPos = miniMap.localToStageCoordinates(new Vector2(0, 0)).x;
+        float yStartPos = miniMap.localToStageCoordinates(new Vector2(0, 0)).y;
+        float xMod = miniMap.getWidth() / (float)miniMap.getColumns() * (float)game.getCurrentTile()
+                .getCoordinates().x;
+        float yMod = miniMap.getHeight() / (float)miniMap.getRows() *
+                ((float)miniMap.getRows() - 1 - (float)game.getCurrentTile().getCoordinates().y);
+        redDot.setPosition(xStartPos + xMod, yStartPos + yMod);
+        addMapViewListener(redDot);
+        stage.addActor(redDot);
+        redDot.toFront();
     }
 
 
@@ -151,6 +181,36 @@ public class GameScreen implements Screen {
         IslandGame.unloadAllAssets(game.getManager(), assets.keySet());
     }
 
+    private Table initializedMiniMapTable() {
+        Island.IterableRegionMap regionMap = game.getCurrentIsland().getIterableRegionMap();
+        Table table = new Table();
+        table.setRound(false);
+        //Get image files for each terrain type
+        Map<Terrain, TextureAtlas.AtlasRegion> terrainAtlasRegionMap = new HashMap<>();
+        for (Terrain terrain : Terrain.TERRAIN_SET) {
+            StringBuilder terrainFileName = new StringBuilder(terrain.toString());
+            terrainFileName.append("Map");
+            terrainAtlasRegionMap.put(terrain, atlas.findRegion(terrainFileName.toString()));
+        }
+        //Iterate through each row
+        for (List<Region> row : regionMap) {
+            //Iterate through each tile in row's region
+            for (Region region : row) {
+                Image image = new Image(terrainAtlasRegionMap.get(region.getTerrain()));
+                table.add(image).uniform().expand().fill();
+            }
+            table.row();
+        }
+        addMapViewListener(table);
+        return table;
+    }
+
+    private Table initializeGameTable() {
+        Table table = new Table();
+        table.setBackground(new TextureRegionDrawable(atlas.findRegion(tile.getRegion().getTerrain().getBackgroundImage())));
+        return table;
+    }
+
     private String staminaString() {
         StringBuilder staminaText = new StringBuilder("Stamina (");
         staminaText.append(game.getPlayer().getStamina());
@@ -164,5 +224,19 @@ public class GameScreen implements Screen {
         staminaBar.setWidth((float)game.getPlayer().getStamina() /  (float)game.getPlayer().getMaxStamina()  *
                 maxStaminaWidth);
         staminaBar.toFront();
+    }
+
+    private void addMapViewListener(Actor actor) {
+        actor.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                game.loadMapViewScreen();
+            }
+        });
     }
 }
