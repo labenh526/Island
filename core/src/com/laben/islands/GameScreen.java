@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,12 +31,13 @@ public class GameScreen implements Screen {
     private Table gameTable;
     private IslandGame game;
     private TextureAtlas atlas;
-    private Tile tile;
+    private final Tile tile;
     private Label staminaLabel;
     private float maxStaminaWidth;
     private Image staminaBar;
+    private Table rootTable;
 
-    public GameScreen(final IslandGame game, Tile tile) {
+    public GameScreen(final IslandGame game, final Tile tile) {
         this.game = game;
         this.tile = tile;
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
@@ -50,7 +53,7 @@ public class GameScreen implements Screen {
 
 
         //Create root table
-        Table rootTable = new Table();
+        rootTable = new Table();
         rootTable.setRound(false);
         stage.addActor(rootTable);
         rootTable.setFillParent(true);
@@ -136,6 +139,27 @@ public class GameScreen implements Screen {
         addMapViewListener(redDot);
         stage.addActor(redDot);
         redDot.toFront();
+
+        //Add arrows
+        if (tile.tileAbove() != null)
+            addArrow(new BitSet(2));
+        if (tile.tileRight() != null) {
+            BitSet right = new BitSet();
+            right.set(0);
+            addArrow(right);
+        }
+        if (tile.tileBelow() != null) {
+            BitSet bottom = new BitSet();
+            bottom.set(1);
+            addArrow(bottom);
+        }
+        if (tile.tileLeft() != null) {
+            BitSet left = new BitSet();
+            left.set(0);
+            left.set(1);
+            addArrow(left);
+        }
+
     }
 
 
@@ -158,7 +182,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -239,4 +263,81 @@ public class GameScreen implements Screen {
             }
         });
     }
+
+    /* Adds a specific arrow to the game screen. The arrow is represented in binary by using a bitset in order to
+       minimize cost. The binary values from 0-3 for each arrow is as follows: Top, Right, Bottom, Left
+     */
+    private void addArrow(BitSet arrow) {
+        //BitSets
+        BitSet right = new BitSet(2);
+        right.set(0); //1
+        BitSet bottom = new BitSet(2);
+        bottom.set(1); //2
+        BitSet left = new BitSet(2);
+        left.set(1);
+        left.set(0); //3
+        //Set variables
+        Image arrowImage;
+        float arrowWidth;
+        float arrowHeight;
+        Cell gameTableCell = rootTable.getCell(gameTable);
+        Vector2 pos;
+        final Tile newTile;
+        //Top
+        if (arrow.equals(new BitSet(2))) {
+            arrowImage = new Image(atlas.findRegion("UpArrow"));
+            arrowWidth = gameTable.getWidth() / 5f;
+            arrowHeight = gameTable.getHeight() / 8f;
+            pos = new Vector2((gameTable.getWidth() - arrowWidth) / 2f,
+                    gameTable.getHeight() - gameTableCell.getPadTop() - arrowHeight);
+            newTile = tile.tileAbove();
+        }
+        //Right
+        else if (arrow.equals(right)) {
+            arrowImage = new Image(atlas.findRegion("RightArrow"));
+            arrowWidth = gameTable.getHeight() / 8f;
+            arrowHeight = gameTable.getWidth() / 5f;
+            pos = new Vector2((gameTable.getWidth() - arrowWidth),
+                    (gameTable.getHeight() - arrowHeight) / 2f - gameTableCell.getPadBottom());
+            newTile = tile.tileRight();
+        }
+        //Bottom
+        else if (arrow.equals(bottom)) {
+            arrowImage = new Image(atlas.findRegion("DownArrow"));
+            arrowWidth = gameTable.getWidth() / 5f;
+            arrowHeight = gameTable.getHeight() / 8f;
+            pos = new Vector2((gameTable.getWidth() - arrowWidth) / 2f,
+                    0 - gameTableCell.getPadBottom());
+            newTile = tile.tileBelow();
+        }
+        //Left
+        else if (arrow.equals(left)) {
+            arrowImage = new Image(atlas.findRegion("LeftArrow"));
+            arrowWidth = gameTable.getHeight() / 8f;
+            arrowHeight = gameTable.getWidth() / 5f;
+            pos = new Vector2(0,
+                    (gameTable.getHeight()  - arrowHeight) / 2f - gameTableCell.getPadBottom());
+            newTile = tile.tileLeft();
+        }
+        else throw new IllegalArgumentException("Invalid BitSet Argument");
+
+
+        arrowImage.setSize(arrowWidth, arrowHeight);
+        arrowImage.setPosition(gameTable.localToStageCoordinates(pos).x, gameTable.localToStageCoordinates(pos).y);
+        arrowImage.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                game.setCurrentTile(newTile);
+                game.loadGameScreen();
+            }
+        });
+        arrowImage.toFront();
+        stage.addActor(arrowImage);
+    }
+
 }

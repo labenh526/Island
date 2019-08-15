@@ -35,7 +35,7 @@ public class IslandGame extends Game {
 		manager = new AssetManager();
 		//create player
 		player = new Player();
-		player.setStamina(39);
+		player.setStamina(1);
 		setCurrentIsland(new Island(69));
 		setStartingPos();
 		setScreen(new MapViewScreen(this));
