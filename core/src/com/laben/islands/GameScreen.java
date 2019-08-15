@@ -1,6 +1,7 @@
 package com.laben.islands;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -199,11 +200,15 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void render(float delta) {
+        //Game Logic:
+
+
+
         //Graphics:
         Gdx.gl.glClearColor((float)(204/255.0), 0, (float)(102/255.0), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -211,6 +216,24 @@ public class GameScreen implements Screen {
         staminaLabel.setText(staminaString());
         setStaminaBarWidth();
         stage.draw();
+
+        //Check if arrow keys pressed
+        if (tile.tileAbove() != null && Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+            game.setCurrentTile(tile.tileAbove());
+            game.loadGameScreen();
+        }
+        else if (tile.tileBelow() != null && Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+            game.setCurrentTile(tile.tileBelow());
+            game.loadGameScreen();
+        }
+        else if (tile.tileRight() != null && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+            game.setCurrentTile(tile.tileRight());
+            game.loadGameScreen();
+        }
+        else if (tile.tileLeft() != null && Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+            game.setCurrentTile(tile.tileLeft());
+            game.loadGameScreen();
+        }
 
     }
 
@@ -231,7 +254,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
@@ -359,6 +382,7 @@ public class GameScreen implements Screen {
         arrowImage.setSize(arrowWidth, arrowHeight);
         arrowImage.setPosition(gameTable.localToStageCoordinates(pos).x, gameTable.localToStageCoordinates(pos).y);
         arrowImage.addListener(new InputListener() {
+
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
