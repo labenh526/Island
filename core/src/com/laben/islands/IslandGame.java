@@ -36,9 +36,10 @@ public class IslandGame extends Game {
 		//create player
 		player = new Player();
 		player.setStamina(1);
-		setCurrentIsland(new Island(69));
+		setCurrentLevel(99);
+		setCurrentIsland(new Island(getCurrentLevel()));
 		setStartingPos();
-		setScreen(new MapViewScreen(this));
+		setScreen(new GameScreen(this, getCurrentTile()));
 	}
 
 	@Override

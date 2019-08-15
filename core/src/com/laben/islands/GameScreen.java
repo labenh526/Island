@@ -111,6 +111,20 @@ public class GameScreen implements Screen {
         greyStaminaBackground.setSize(maxStaminaWidth, staminaBar.getHeight());
         stage.addActor(greyStaminaBackground);
 
+        //Create level text (uses same font as stamina)
+        Label.LabelStyle levelLabelStyle = new Label.LabelStyle();
+        levelLabelStyle.font = game.getManager().get("Fonts/StaminaTextFont.fnt");
+        levelLabelStyle.fontColor = Color.BLACK;
+        Label levelLabel = new Label("Level " + game.getCurrentLevel(), staminaLabelStyle);
+        levelLabel.setAlignment(Align.bottomRight);
+        levelLabel.setSize(.4f * IslandGame.getGameWidth(), .5f / 6f * IslandGame.getGameHeight());
+        levelLabel.validate();
+        stage.addActor(levelLabel);
+        float levelLabelXPos = staminaBackground.getX() + staminaBackground.getWidth() - levelLabel.getWidth();
+        float levelLabelYPos = staminaBackground.getY() + staminaBackground.getHeight();
+        levelLabel.setPosition(levelLabelXPos, levelLabelYPos);
+        stage.addActor(levelLabel);
+
         //Create mini map bg
         Image miniMapBackground = new Image(atlas.findRegion("MiniMapBackground"));
         miniMapBackground.setPosition(staminaBackground.getX(), staminaBackground.getY() -
