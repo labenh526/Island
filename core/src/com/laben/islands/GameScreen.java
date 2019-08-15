@@ -47,6 +47,7 @@ public class GameScreen implements Screen {
         assets = new HashMap<>();
         assets.put("GameScreenTextures.atlas", TextureAtlas.class);
         assets.put("Fonts/StaminaTextFont.fnt", BitmapFont.class);
+        assets.put("Fonts/GameScreenRegion.fnt", BitmapFont.class);
         IslandGame.loadAllAssets(game.getManager(), assets);
         game.getManager().finishLoading();
         atlas = game.getManager().get("GameScreenTextures.atlas");
@@ -159,6 +160,39 @@ public class GameScreen implements Screen {
             left.set(1);
             addArrow(left);
         }
+
+        //Create region text background
+        Image regionTextBackground = new Image(atlas.findRegion(tile.getRegion().getTerrain().toString() + "Map"));
+        float regionTextBoxWidth = gameTable.getWidth() * .3f;
+        float regionTextBoxHeight = gameTable.getHeight() * .15f;
+        regionTextBackground.toFront();
+        float regionTextBoxPosX = gameTable.getX();
+        float regionTextBoxPosY = gameTable.getY() + gameTable.getHeight() - regionTextBoxHeight;
+        regionTextBackground.setSize(regionTextBoxWidth, regionTextBoxHeight);
+        regionTextBackground.setPosition(regionTextBoxPosX, regionTextBoxPosY);
+        stage.addActor(regionTextBackground);
+
+        Image regionTextBox = new Image(atlas.findRegion("RegionTextBox"));
+        regionTextBox.toFront();
+        regionTextBox.setPosition(regionTextBoxPosX, regionTextBoxPosY);
+        regionTextBox.setSize(regionTextBoxWidth, regionTextBoxHeight);
+        stage.addActor(regionTextBox);
+
+        //Add text onto region text background
+        Label.LabelStyle regionTextStyle = new Label.LabelStyle();
+        regionTextStyle.font = game.getManager().get("Fonts/GameScreenRegion.fnt");
+        regionTextStyle.fontColor = Color.BLACK;
+        String[] splitRegionNameArray = tile.getRegion().toString().split("\\s+");
+        StringBuilder splitRegionName = new StringBuilder(splitRegionNameArray[0]);
+        splitRegionName.append("\n");
+        splitRegionName.append(splitRegionNameArray[1]);
+        Label regionLabel = new Label(splitRegionName.toString(), regionTextStyle);
+        //regionLabel.setAlignment(Align.topLeft);
+        regionLabel.setSize(regionTextBoxWidth * .9f, regionTextBoxHeight * .9f);
+        regionLabel.setPosition(regionTextBoxPosX + regionTextBoxWidth * .05f,
+                regionTextBoxPosY + regionTextBoxHeight * .05f);
+        regionLabel.setFontScale(.3f);
+        stage.addActor(regionLabel);
 
     }
 

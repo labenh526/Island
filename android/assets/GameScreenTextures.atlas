@@ -38,114 +38,121 @@ UpArrow
   orig: 256, 256
   offset: 0, 0
   index: -1
-DesertBackground
+RegionTextBox
   rotate: false
   xy: 517, 843
-  size: 32, 32
-  orig: 32, 32
+  size: 44, 32
+  orig: 44, 32
   offset: 0, 0
   index: -1
-DesertMap
+DesertBackground
   rotate: false
   xy: 1, 69
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-JungleBackground
+DesertMap
   rotate: false
   xy: 259, 327
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-JungleMap
+JungleBackground
   rotate: false
   xy: 517, 809
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-MiniMapBackground
+JungleMap
   rotate: false
-  xy: 551, 843
+  xy: 563, 843
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-PlainsBackground
+MiniMapBackground
   rotate: false
   xy: 1, 35
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-PlainsMap
+PlainsBackground
   rotate: false
   xy: 35, 69
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-SwampBackground
+PlainsMap
   rotate: false
   xy: 259, 293
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-SwampMap
+SwampBackground
   rotate: false
   xy: 293, 327
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-TundraBackground
+SwampMap
   rotate: false
   xy: 517, 775
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-TundraMap
+TundraBackground
   rotate: false
   xy: 551, 809
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-WoodsBackground
+TundraMap
   rotate: false
-  xy: 585, 843
+  xy: 597, 843
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-WoodsMap
+WoodsBackground
   rotate: false
   xy: 1, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-GreyStaminaBackground
+WoodsMap
   rotate: false
-  xy: 35, 62
-  size: 32, 5
-  orig: 32, 5
+  xy: 35, 35
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
-StaminaBackground
+GreyStaminaBackground
   rotate: false
   xy: 69, 96
   size: 32, 5
   orig: 32, 5
   offset: 0, 0
   index: -1
-StaminaBar
+StaminaBackground
   rotate: false
   xy: 259, 286
+  size: 32, 5
+  orig: 32, 5
+  offset: 0, 0
+  index: -1
+StaminaBar
+  rotate: false
+  xy: 293, 320
   size: 32, 5
   orig: 32, 5
   offset: 0, 0
