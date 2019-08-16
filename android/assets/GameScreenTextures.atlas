@@ -5,154 +5,238 @@ filter: Nearest,Nearest
 repeat: none
 DownArrow
   rotate: false
-  xy: 1, 619
+  xy: 1, 717
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 LeftArrow
   rotate: false
-  xy: 1, 361
+  xy: 1, 459
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 reddot
   rotate: false
-  xy: 259, 619
+  xy: 259, 717
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 RightArrow
   rotate: false
-  xy: 1, 103
+  xy: 1, 201
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 UpArrow
   rotate: false
-  xy: 259, 361
+  xy: 259, 459
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
-RegionTextBox
+DesertGrass
+  rotate: false
+  xy: 517, 909
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+DesertRock
+  rotate: false
+  xy: 1, 135
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+JungleGrass
+  rotate: false
+  xy: 259, 393
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+JungleRock
   rotate: false
   xy: 517, 843
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+PlainsGrass
+  rotate: false
+  xy: 583, 909
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+PlainsRock
+  rotate: false
+  xy: 1, 69
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+SwampGrass
+  rotate: false
+  xy: 67, 135
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+SwampRock
+  rotate: false
+  xy: 259, 327
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+TundraGrass
+  rotate: false
+  xy: 325, 393
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+TundraRock
+  rotate: false
+  xy: 517, 777
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+WoodsGrass
+  rotate: false
+  xy: 583, 843
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+WoodsRock
+  rotate: false
+  xy: 649, 909
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+RegionTextBox
+  rotate: false
+  xy: 1, 35
   size: 44, 32
   orig: 44, 32
   offset: 0, 0
   index: -1
 DesertBackground
   rotate: false
-  xy: 1, 69
+  xy: 67, 101
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 DesertMap
   rotate: false
-  xy: 259, 327
+  xy: 133, 167
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 JungleBackground
   rotate: false
-  xy: 517, 809
+  xy: 259, 293
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 JungleMap
   rotate: false
-  xy: 563, 843
+  xy: 325, 359
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 MiniMapBackground
   rotate: false
-  xy: 1, 35
+  xy: 391, 425
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 PlainsBackground
   rotate: false
-  xy: 35, 69
+  xy: 517, 743
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 PlainsMap
   rotate: false
-  xy: 259, 293
+  xy: 583, 809
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 SwampBackground
   rotate: false
-  xy: 293, 327
+  xy: 649, 875
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 SwampMap
   rotate: false
-  xy: 517, 775
+  xy: 715, 941
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 TundraBackground
   rotate: false
-  xy: 551, 809
+  xy: 1, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 TundraMap
   rotate: false
-  xy: 597, 843
+  xy: 167, 167
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 WoodsBackground
   rotate: false
-  xy: 1, 1
+  xy: 259, 259
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 WoodsMap
   rotate: false
-  xy: 35, 35
+  xy: 425, 425
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 GreyStaminaBackground
   rotate: false
-  xy: 69, 96
+  xy: 67, 94
   size: 32, 5
   orig: 32, 5
   offset: 0, 0
   index: -1
 StaminaBackground
   rotate: false
-  xy: 259, 286
+  xy: 133, 160
   size: 32, 5
   orig: 32, 5
   offset: 0, 0
   index: -1
 StaminaBar
   rotate: false
-  xy: 293, 320
+  xy: 325, 352
   size: 32, 5
   orig: 32, 5
   offset: 0, 0

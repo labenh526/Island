@@ -178,7 +178,7 @@ public class GameScreen implements Screen {
 
         //Create region text background
         Image regionTextBackground = new Image(atlas.findRegion(tile.getRegion().getTerrain().toString() + "Map"));
-        float regionTextBoxWidth = gameTable.getWidth() * .3f;
+        float regionTextBoxWidth = gameTable.getWidth() * .33f;
         float regionTextBoxHeight = gameTable.getHeight() * .15f;
         regionTextBackground.toFront();
         float regionTextBoxPosX = gameTable.getX();
@@ -301,7 +301,22 @@ public class GameScreen implements Screen {
 
     private Table initializeGameTable() {
         Table table = new Table();
-        table.setBackground(new TextureRegionDrawable(atlas.findRegion(tile.getRegion().getTerrain().getBackgroundImage())));
+        //table.setBackground(new TextureRegionDrawable(atlas.findRegion(tile.getRegion().getTerrain().getBackgroundImage())));
+        Tile.GraphicsItem[][] gItems = tile.getGraphicsItemsTable();
+        for (Tile.GraphicsItem[] row : gItems) {
+            for (Tile.GraphicsItem item : row) {
+                String modifier;
+                if (item.equals(Tile.GraphicsItem.ROCK))
+                    modifier = "Rock";
+                else if (item.equals(Tile.GraphicsItem.GRASS))
+                    modifier = "Grass";
+                else modifier = "Background";
+                Image itemImage = new Image(atlas.findRegion(tile.getRegion().getTerrain().toString() + modifier));
+                table.add(itemImage).uniform().expand().fill();
+            }
+            table.row();
+        }
+
         return table;
     }
 
