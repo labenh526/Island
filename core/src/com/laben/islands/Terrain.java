@@ -5,12 +5,12 @@ import java.util.*;
 /** Represents the terrain and its properties**/
 public class Terrain {
 
-    public static final Terrain WOODS = new Terrain("Woods", 1, "WoodsBackground", 1);
-    public static final Terrain DESERT = new Terrain("Desert", 4, "DesertBackground", .35);
-    public static final Terrain PLAINS = new Terrain("Plains", 1, "PlainsBackground", .35);
-    public static final Terrain TUNDRA = new Terrain("Tundra", 24, "TundraBackground", .4);
-    public static final Terrain SWAMP = new Terrain("Swamp", 14, "SwampBackground", .4);
-    public static final Terrain JUNGLE = new Terrain("Jungle", 34, "JungleBackground", 1.2);
+    public static final Terrain WOODS = new Terrain("Woods", 1, "WoodsBackground", 3.2);
+    public static final Terrain DESERT = new Terrain("Desert", 4, "DesertBackground", .4);
+    public static final Terrain PLAINS = new Terrain("Plains", 1, "PlainsBackground", .6);
+    public static final Terrain TUNDRA = new Terrain("Tundra", 24, "TundraBackground", .75);
+    public static final Terrain SWAMP = new Terrain("Swamp", 14, "SwampBackground", .5);
+    public static final Terrain JUNGLE = new Terrain("Jungle", 34, "JungleBackground", 4);
 
     public static final Set<Terrain> TERRAIN_SET = new HashSet<>(Arrays.asList(
             WOODS, DESERT, PLAINS, TUNDRA, SWAMP, JUNGLE));

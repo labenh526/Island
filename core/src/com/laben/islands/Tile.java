@@ -149,18 +149,18 @@ public class Tile {
             int startingYPoint = corner == 0 || corner == 1 ? 3 :
                     (int)(7f * (1f - TREE_CORNER_SIDE_SIZE / GameScreen.GAME_TABLE_HEIGHT));
             int startingXPoint = corner == 0 || corner == 3 ? 0 :
-                    (int)(7f * (1f - TREE_CORNER_SIDE_SIZE / GameScreen.GAME_TABLE_WIDTH) + 3f);
+                    (int)(7f * (1f - TREE_CORNER_SIDE_SIZE / GameScreen.GAME_TABLE_WIDTH));
             int endingYPoint = corner == 0 || corner == 1 ? (int)Math.ceil(
                     TREE_CORNER_SIDE_SIZE * 7f / GameScreen.GAME_TABLE_HEIGHT + 3f) : graphicsItemsTable.length;
             int endingXPoint = corner == 0 || corner == 3 ? (int)Math.ceil(
-                    TREE_CORNER_SIDE_SIZE * 7f / GameScreen.GAME_TABLE_WIDTH) : graphicsItemsTable[0].length - 3;
+                    TREE_CORNER_SIDE_SIZE * 7f / GameScreen.GAME_TABLE_WIDTH) : graphicsItemsTable[0].length;
 
             int x = 0;
             int y = 0; //These ints are the relative x and y values
             for (int i = startingYPoint; i < endingYPoint; i++) {
                 for (int j = startingXPoint; j < endingXPoint; j++) {
                     //If not empty
-                    if (graphicsItemsTable[i][j] != GraphicsItem.EMPTY &&
+                    if (graphicsItemsTable[i][j] != GraphicsItem.EMPTY ||
                             vectorWithinGraphicsTableCell(pos, new GridPoint2(x, y))) {
                         return false;
                     }
