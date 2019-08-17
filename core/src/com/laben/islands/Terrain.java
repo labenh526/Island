@@ -5,12 +5,12 @@ import java.util.*;
 /** Represents the terrain and its properties**/
 public class Terrain {
 
-    public static final Terrain WOODS = new Terrain("Woods", 1, "WoodsBackground");
-    public static final Terrain DESERT = new Terrain("Desert", 4, "DesertBackground");
-    public static final Terrain PLAINS = new Terrain("Plains", 1, "PlainsBackground");
-    public static final Terrain TUNDRA = new Terrain("Tundra", 24, "TundraBackground");
-    public static final Terrain SWAMP = new Terrain("Swamp", 14, "SwampBackground");
-    public static final Terrain JUNGLE = new Terrain("Jungle", 34, "JungleBackground");
+    public static final Terrain WOODS = new Terrain("Woods", 1, "WoodsBackground", 1);
+    public static final Terrain DESERT = new Terrain("Desert", 4, "DesertBackground", .35);
+    public static final Terrain PLAINS = new Terrain("Plains", 1, "PlainsBackground", .35);
+    public static final Terrain TUNDRA = new Terrain("Tundra", 24, "TundraBackground", .4);
+    public static final Terrain SWAMP = new Terrain("Swamp", 14, "SwampBackground", .4);
+    public static final Terrain JUNGLE = new Terrain("Jungle", 34, "JungleBackground", 1.2);
 
     public static final Set<Terrain> TERRAIN_SET = new HashSet<>(Arrays.asList(
             WOODS, DESERT, PLAINS, TUNDRA, SWAMP, JUNGLE));
@@ -21,11 +21,13 @@ public class Terrain {
     private final String name; //The text representation of the terrain
     private final int startingLevel; //The level in which this terrain has an equal chance of being randomly selected
     private final String backgroundImage; //The background image used when drawing the Game Screen
+    private final double treesPerCorner; //Avg number of trees per corner in that terrain
 
-    private Terrain(String name, int startingLevel, String backgroundImage) {
+    private Terrain(String name, int startingLevel, String backgroundImage, double treesPerCorner) {
         this.name = name;
         this.startingLevel = startingLevel;
         this.backgroundImage = backgroundImage;
+        this.treesPerCorner = treesPerCorner;
     }
 
     @Override
@@ -47,13 +49,17 @@ public class Terrain {
         return startingLevel;
     }
 
-    //Given the current level, will determine a random terrain
-    public static Terrain randomTerrain(int level) {
-        return randomTerrain(level, new HashSet<Terrain>());
+    public double getTreesPerCorner() {
+        return treesPerCorner;
     }
 
     public String getBackgroundImage() {
         return backgroundImage;
+    }
+
+    //Given the current level, will determine a random terrain
+    public static Terrain randomTerrain(int level) {
+        return randomTerrain(level, new HashSet<Terrain>());
     }
 
     //Given the current level and a set of illegal terrain options, returns a random terrain

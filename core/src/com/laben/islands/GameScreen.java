@@ -20,12 +20,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameScreen implements Screen {
+
+    public static final float GAME_TABLE_WIDTH = .55f * (float)IslandGame.GAME_WIDTH;
+    public static final float GAME_TABLE_HEIGHT = 11f / 12f * (float)IslandGame.getGameHeight();
 
     private Stage stage;
     private Map<String, Class> assets;
@@ -62,15 +62,17 @@ public class GameScreen implements Screen {
 
         //Add gameview table
         gameTable = initializeGameTable();
-        rootTable.row().height(11f / 12f * (float)IslandGame.getGameHeight());
+        rootTable.row().height(GAME_TABLE_HEIGHT);
         float leftPadding  = (.05f * (float)IslandGame.GAME_WIDTH);
         float topBottomPadding = 2.5f / 60.0f * (float)IslandGame.GAME_HEIGHT;
-        float gameTableWidth = .55f * (float)IslandGame.GAME_WIDTH;
-        rootTable.add(gameTable).expand().width(gameTableWidth).padLeft(leftPadding).padTop(topBottomPadding)
+        rootTable.add(gameTable).expand().width(GAME_TABLE_WIDTH).padLeft(leftPadding).padTop(topBottomPadding)
                 .padBottom(topBottomPadding).left();
 
         rootTable.validate();
         gameTable.validate();
+
+        //Add trees
+        addTrees();
 
         //Create stamina text label
         Label.LabelStyle staminaLabelStyle = new Label.LabelStyle();
@@ -424,6 +426,45 @@ public class GameScreen implements Screen {
         });
         arrowImage.toFront();
         stage.addActor(arrowImage);
+    }
+
+    private void addTrees() {
+        //For each corner starting in topleft and moving clockwise
+        for (int corner = 0; corner < 4; corner++) {
+            List<Vector2> sortedTrees = new ArrayList<>(tile.getTrees().treeCoordinates(corner));
+            Collections.sort(sortedTrees, new Comparator<Vector2>() {
+                @Override
+                public int compare(Vector2 o1, Vector2 o2) {
+                    if (o1.y == o2.y)
+                        return 0;
+                    if (o1.y > o2.y)
+                        return -1;
+                    else
+                        return 1;
+                }
+            });
+            for(Vector2 treePos : sortedTrees) {
+                float treeWidth = GAME_TABLE_WIDTH / 7f;
+                float treeHeight = GAME_TABLE_HEIGHT / 7f * 3f;
+                Vector2 absolutePos;
+                if (corner == 0)
+                    absolutePos = new Vector2(treePos.x,
+                            treePos.y + GAME_TABLE_HEIGHT - Tile.TREE_CORNER_SIDE_SIZE - treeHeight);
+                else if (corner == 1)
+                    absolutePos = new Vector2(treePos.x + GAME_TABLE_WIDTH - Tile.TREE_CORNER_SIDE_SIZE - treeWidth,
+                            treePos.y + GAME_TABLE_HEIGHT - Tile.TREE_CORNER_SIDE_SIZE - treeHeight);
+                else if (corner == 2)
+                    absolutePos = new Vector2(treePos.x + GAME_TABLE_WIDTH - Tile.TREE_CORNER_SIDE_SIZE - treeWidth,
+                            treePos.y);
+                else absolutePos = new Vector2(treePos.x, treePos.y);
+
+                Image treeImage = new Image(atlas.findRegion(tile.getRegion().getTerrain().toString() + "Tree"));
+                treeImage.setPosition(gameTable.localToStageCoordinates(absolutePos).x,
+                        gameTable.localToStageCoordinates(absolutePos).y - ((IslandGame.GAME_HEIGHT - GAME_TABLE_HEIGHT)/2f));
+                treeImage.setSize(treeWidth, treeHeight);
+                stage.addActor(treeImage);
+            }
+        }
     }
 
 }
