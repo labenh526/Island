@@ -1,4 +1,4 @@
-package com.laben.islands;
+package com.laben.islands.Screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -17,6 +17,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.laben.islands.Island;
+import com.laben.islands.IslandGame;
+import com.laben.islands.Region;
+import com.laben.islands.Terrain;
 
 import java.util.*;
 
@@ -161,6 +165,7 @@ public class MapViewScreen implements Screen {
     public void dispose() {
         stage.dispose();
         IslandGame.unloadAllAssets(game.getManager(), assets.keySet());
+        atlas.dispose();
     }
 
     private Table initializedMapTable() {

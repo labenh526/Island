@@ -2,6 +2,7 @@ package com.laben.islands;
 
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
+import com.laben.islands.Screens.GameScreen;
 
 import java.util.*;
 
@@ -147,13 +148,13 @@ public class Tile {
         private boolean validTreePos(Vector2 pos, int corner) {
             //Determine which cells in the tile to check for graphics items. Depends on the corner
             int startingYPoint = corner == 0 || corner == 1 ? 3 :
-                    (int)(7f * (1f - TREE_CORNER_SIDE_SIZE / GameScreen.GAME_TABLE_HEIGHT));
+                    (int)(7f * (1f - TREE_CORNER_SIDE_SIZE / com.laben.islands.Screens.GameScreen.GAME_TABLE_HEIGHT));
             int startingXPoint = corner == 0 || corner == 3 ? 0 :
-                    (int)(7f * (1f - TREE_CORNER_SIDE_SIZE / GameScreen.GAME_TABLE_WIDTH));
+                    (int)(7f * (1f - TREE_CORNER_SIDE_SIZE / com.laben.islands.Screens.GameScreen.GAME_TABLE_WIDTH));
             int endingYPoint = corner == 0 || corner == 1 ? (int)Math.ceil(
-                    TREE_CORNER_SIDE_SIZE * 7f / GameScreen.GAME_TABLE_HEIGHT + 3f) : graphicsItemsTable.length;
+                    TREE_CORNER_SIDE_SIZE * 7f / com.laben.islands.Screens.GameScreen.GAME_TABLE_HEIGHT + 3f) : graphicsItemsTable.length;
             int endingXPoint = corner == 0 || corner == 3 ? (int)Math.ceil(
-                    TREE_CORNER_SIDE_SIZE * 7f / GameScreen.GAME_TABLE_WIDTH) : graphicsItemsTable[0].length;
+                    TREE_CORNER_SIDE_SIZE * 7f / com.laben.islands.Screens.GameScreen.GAME_TABLE_WIDTH) : graphicsItemsTable[0].length;
 
             int x = 0;
             int y = 0; //These ints are the relative x and y values

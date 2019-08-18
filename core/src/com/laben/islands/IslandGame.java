@@ -5,6 +5,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.GridPoint2;
+import com.laben.islands.Screens.GameScreen;
+import com.laben.islands.Screens.MapViewScreen;
 
 import java.util.Collection;
 import java.util.Map;
@@ -39,7 +41,7 @@ public class IslandGame extends Game {
 		setCurrentLevel(76);
 		setCurrentIsland(new Island(getCurrentLevel()));
 		setStartingPos();
-		setScreen(new GameScreen(this, getCurrentTile()));
+		setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
 	}
 
 	@Override
