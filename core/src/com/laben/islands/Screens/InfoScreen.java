@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.laben.islands.IslandGame;
 
@@ -25,6 +26,7 @@ public abstract class InfoScreen implements Screen {
     private TextureAtlas specificAtlas;
 
     private Image infoBoxBg; //used for relative positioning in child classes
+    private I18NBundle infoBundle;
 
     public enum ScreenType {PLAYER, INVENTORY, CLUE}
 
@@ -37,9 +39,11 @@ public abstract class InfoScreen implements Screen {
         assets = new HashMap<>(assetMap);
         assets.put("InfoScreenTextures.atlas", TextureAtlas.class);
         assets.put("Fonts/InfoViewTitle.fnt", BitmapFont.class);
+        assets.put("i18n/InfoViewBundle", I18NBundle.class);
         IslandGame.loadAllAssets(game.getManager(), assets);
         game.getManager().finishLoading();
         atlas = game.getManager().get("InfoScreenTextures.atlas");
+        infoBundle = game.getManager().get("i18n/InfoViewBundle");
 
         //Positional data calculations
         float tabWidth = IslandGame.GAME_WIDTH * .1f;
@@ -92,7 +96,7 @@ public abstract class InfoScreen implements Screen {
             playerTab.toFront();
 
         //Add title of that inventory
-        String title = "Inventory";
+        String title = infoBundle.get("Inventory");
         if (screenType.equals(ScreenType.PLAYER))
             title = "bleh";
         else if (screenType.equals(ScreenType.CLUE))
@@ -166,5 +170,9 @@ public abstract class InfoScreen implements Screen {
 
     IslandGame getGame() {
         return game;
+    }
+
+    I18NBundle getInfoBundle() {
+        return infoBundle;
     }
 }

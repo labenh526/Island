@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.laben.islands.IslandGame;
 import com.laben.islands.items.Item;
 
@@ -23,15 +24,18 @@ public class InventoryScreen extends InfoScreen{
         inventoryScreenAssets.put("InventoryScreenTextures.atlas", TextureAtlas.class);
         inventoryScreenAssets.put("Fonts/InventoryItemListTitle.fnt", BitmapFont.class);
         inventoryScreenAssets.put("Fonts/InventoryItemName.fnt", BitmapFont.class);
+        inventoryScreenAssets.put("i18n/ItemBundle", I18NBundle.class);
     }
 
     private TextureAtlas inventoryAtlas;
     private Table inventoryTable;
+    private I18NBundle itemBundle;
 
     public InventoryScreen(IslandGame game) {
         super(game, ScreenType.INVENTORY, inventoryScreenAssets);
 
         inventoryAtlas = game.getManager().get("InventoryScreenTextures.atlas");
+        itemBundle = game.getManager().get("i18n/ItemBundle");
 
         getInfoBoxBg().validate();
         //Add inventory list box
@@ -88,7 +92,7 @@ public class InventoryScreen extends InfoScreen{
         Label.LabelStyle titleStyle = new Label.LabelStyle();
         titleStyle.font = getGame().getManager().get("Fonts/InventoryItemListTitle.fnt");
         titleStyle.fontColor = Color.BLACK;
-        Label nameTitle = new Label("Item", titleStyle);
+        Label nameTitle = new Label(getInfoBundle().get("Item"), titleStyle);
         nameTitle.setAlignment(Align.topLeft);
         nameTitle.setWidth(itemNameWidth);
         Label numTitle = new Label("#", titleStyle);
@@ -111,7 +115,7 @@ public class InventoryScreen extends InfoScreen{
         //Add all items and their quantities
         for (Item item : getGame().getPlayer().getInventoryInBag()) {
             table.row().height(tableCellHeight);
-            itemLabel = new Label(item.getName(), itemStyle);
+            itemLabel = new Label(itemBundle.get(item.getName()), itemStyle);
             itemNumLabel = new Label(getGame().getPlayer().getInventory().get(item).toString(), itemStyle);
             itemLabel.setWidth(itemNameWidth);
             itemLabel.setFontScale(.35f);

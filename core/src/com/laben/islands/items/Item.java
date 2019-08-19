@@ -1,5 +1,8 @@
 package com.laben.islands.items;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.laben.islands.IslandGame;
 
 import java.util.*;
@@ -18,22 +21,25 @@ public class Item implements Comparable<Item>{
         itemSortOrder.put(ItemType.Heal, 0);
 
         masterItemSet = new ArrayList<>(50);
-        masterItemSet.add(new Item("Bread Crumbs", false, 1, new HealStamina(1), ItemType.Heal));
-        masterItemSet.add(new Item("Bread", false, 5, new HealStamina(5), ItemType.Heal));
-        masterItemSet.add(new Item("Magic Bread", false, 35, new HealStamina(20), ItemType.Heal));
+        masterItemSet.add(new Item("BreadCrumbs", 1, new HealStamina(1), ItemType.Heal));
+        masterItemSet.add(new Item("Bread", 5, new HealStamina(5), ItemType.Heal));
+        masterItemSet.add(new Item("MagicBread", 35, new HealStamina(20), ItemType.Heal));
+        masterItemSet.add(new Item("StaminaSerum", 12, new HealStaminaPercent(.25), ItemType.Heal));
+        masterItemSet.add(new Item("SuperSyrum", 50, new HealStaminaPercent(.5), ItemType.Heal));
+        masterItemSet.add(new Item("GoldenSyrum", 91, new HealStaminaPercent(.75), ItemType.Heal));
+        masterItemSet.add(new Item("MythicSyrum", 124, new HealStaminaPercent(1.0), ItemType.Heal));
+
 
     }
 
 
     private final String name;
-    private final boolean isEquippable;
     private final ItemScript script;
     private final int value;
     private ItemType type;
 
-    public Item(String name, boolean isEquippable, int value, ItemScript script, ItemType type) {
+    public Item(String name, int value, ItemScript script, ItemType type) {
         this.name = name;
-        this.isEquippable = isEquippable;
         this.script = script;
         this.value = value;
         this.type = type;
@@ -48,9 +54,6 @@ public class Item implements Comparable<Item>{
         return name;
     }
 
-    public boolean isEquippable() {
-        return isEquippable;
-    }
 
     public int getValue() {
         return value;
@@ -61,8 +64,7 @@ public class Item implements Comparable<Item>{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Item item = (Item) o;
-        return isEquippable == item.isEquippable &&
-                value == item.value &&
+        return value == item.value &&
                 name.equals(item.name);
     }
 
@@ -70,7 +72,6 @@ public class Item implements Comparable<Item>{
     public int hashCode() {
         int hash = 7;
         hash = 31 * hash + (name == null ? 0 : name.hashCode());
-        hash = 31 * hash + (isEquippable ? 0 : 1);
         hash = 31 * hash + value;
         return hash;
     }
@@ -84,9 +85,6 @@ public class Item implements Comparable<Item>{
         //Check if items are equal
         if (equals(o))
             return 0;
-        //Checks if equippable. Equippable items are sorted last
-        if (isEquippable != o.isEquippable())
-            return isEquippable ? 1 : -1;
         //Checks for item type
         if (!type.equals(o.getItemType()))
             return itemSortOrder.get(type) - itemSortOrder.get(o.getItemType());
@@ -106,7 +104,6 @@ public class Item implements Comparable<Item>{
 
     //Heals a specified amount of stamina
     private static class HealStamina implements ItemScript {
-
         int staminaAmount;
 
         HealStamina(int staminaAmount) {
@@ -118,6 +115,24 @@ public class Item implements Comparable<Item>{
             int maxStamina = game.getPlayer().getMaxStamina();
             int currentStamina = game.getPlayer().getStamina();
             currentStamina += staminaAmount;
+            game.getPlayer().setStamina(currentStamina > maxStamina ? maxStamina : currentStamina);
+        }
+    }
+
+    //Heals stamina by a % of max stamina
+    private static class HealStaminaPercent implements ItemScript {
+        double percent;
+
+        HealStaminaPercent(double percent) {
+            this.percent = percent;
+        }
+
+        @Override
+        public void execute(IslandGame game) {
+            int maxStamina = game.getPlayer().getMaxStamina();
+            int currentStamina = game.getPlayer().getStamina();
+            int percentStamina = (int)((double)maxStamina * percent);
+            currentStamina += percentStamina;
             game.getPlayer().setStamina(currentStamina > maxStamina ? maxStamina : currentStamina);
         }
     }
