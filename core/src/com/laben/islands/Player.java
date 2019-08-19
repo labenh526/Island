@@ -57,8 +57,14 @@ public class Player {
     //Adds the given number of the specified item to the player's inventory
     public void addItemToInventory(Item item, int quantity) {
         inventoryInBag.add(item);
-        int numItems = inventory.get(item);
-        inventory.put(item, numItems + quantity);
+        inventory.put(item, inventory.get(item) + quantity);
+    }
+
+    //Sorts the inventory in the player's bag
+    public void sortInventory() {
+        List<Item> inventoryList = new LinkedList<>(inventoryInBag);
+        Collections.sort(inventoryList);
+        inventoryInBag = new LinkedHashSet<>(inventoryList);
     }
 
 

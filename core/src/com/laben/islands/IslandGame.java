@@ -44,7 +44,10 @@ public class IslandGame extends Game {
 		setCurrentLevel(76);
 		setCurrentIsland(new Island(getCurrentLevel()));
 		setStartingPos();
-		player.addItemToInventory(Item.masterItemSet.get(2));
+		player.addItemToInventory(Item.masterItemSet.get(1), 10);
+		player.addItemToInventory(Item.masterItemSet.get(0));
+		player.addItemToInventory(Item.masterItemSet.get(2), 3);
+		player.addItemToInventory(Item.masterItemSet.get(0), 7);
 		setScreen(new InventoryScreen(this));
 		//setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
 	}
