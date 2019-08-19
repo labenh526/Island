@@ -2,15 +2,12 @@ package com.laben.islands.items;
 
 import com.laben.islands.IslandGame;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**All items extend from this class**/
 public class Item implements Comparable<Item>{
 
-    public static final Set<Item> masterItemSet; //Set of all items in the game
+    public static final List<Item> masterItemSet; //Set of all items in the game
 
     private enum ItemType {Heal}
 
@@ -20,7 +17,7 @@ public class Item implements Comparable<Item>{
         itemSortOrder = new HashMap<>();
         itemSortOrder.put(ItemType.Heal, 0);
 
-        masterItemSet = new HashSet<>();
+        masterItemSet = new ArrayList<>(50);
         masterItemSet.add(new Item("Bread Crumbs", false, 1, new HealStamina(1), ItemType.Heal));
         masterItemSet.add(new Item("Bread", false, 5, new HealStamina(5), ItemType.Heal));
         masterItemSet.add(new Item("Magic Bread", false, 35, new HealStamina(20), ItemType.Heal));
@@ -71,8 +68,11 @@ public class Item implements Comparable<Item>{
 
     @Override
     public int hashCode() {
-        Object[] objects = {name, isEquippable, value};
-        return objects.hashCode();
+        int hash = 7;
+        hash = 31 * hash + (name == null ? 0 : name.hashCode());
+        hash = 31 * hash + (isEquippable ? 0 : 1);
+        hash = 31 * hash + value;
+        return hash;
     }
 
     public ItemType getItemType() {

@@ -33,20 +33,13 @@ public abstract class InfoScreen implements Screen {
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
         Gdx.input.setInputProcessor(stage);
 
-        String specificAtlasFilePath = "InventoryScreenTextures.atlas";
-        if (screenType.equals(ScreenType.CLUE))
-            specificAtlasFilePath = "ClueScreenTextures.atlas";
-        else if (screenType.equals(ScreenType.PLAYER))
-            specificAtlasFilePath = "PlayerScreenTextures.atlas";
 
         assets = new HashMap<>(assetMap);
         assets.put("InfoScreenTextures.atlas", TextureAtlas.class);
         assets.put("Fonts/InfoViewTitle.fnt", BitmapFont.class);
-        assets.put(specificAtlasFilePath, TextureAtlas.class);
         IslandGame.loadAllAssets(game.getManager(), assets);
         game.getManager().finishLoading();
         atlas = game.getManager().get("InfoScreenTextures.atlas");
-        specificAtlas = game.getManager().get(specificAtlasFilePath);
 
         //Positional data calculations
         float tabWidth = IslandGame.GAME_WIDTH * .1f;

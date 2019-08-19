@@ -9,6 +9,7 @@ import com.laben.islands.Screens.GameScreen;
 import com.laben.islands.Screens.InfoScreen;
 import com.laben.islands.Screens.InventoryScreen;
 import com.laben.islands.Screens.MapViewScreen;
+import com.laben.islands.items.Item;
 
 import java.util.Collection;
 import java.util.Map;
@@ -43,6 +44,7 @@ public class IslandGame extends Game {
 		setCurrentLevel(76);
 		setCurrentIsland(new Island(getCurrentLevel()));
 		setStartingPos();
+		player.addItemToInventory(Item.masterItemSet.get(2));
 		setScreen(new InventoryScreen(this));
 		//setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
 	}
