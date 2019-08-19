@@ -1,0 +1,54 @@
+
+InfoScreenTextures.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+InfoBoxOutline
+  rotate: false
+  xy: 1, 37
+  size: 400, 214
+  orig: 400, 214
+  offset: 0, 0
+  index: -1
+ClueTab
+  rotate: false
+  xy: 403, 123
+  size: 200, 128
+  orig: 200, 128
+  offset: 0, 0
+  index: -1
+ItemTab
+  rotate: false
+  xy: 605, 123
+  size: 200, 128
+  orig: 200, 128
+  offset: 0, 0
+  index: -1
+PlayerTab
+  rotate: false
+  xy: 807, 123
+  size: 200, 128
+  orig: 200, 128
+  offset: 0, 0
+  index: -1
+ClueBg
+  rotate: false
+  xy: 1, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+ItemBg
+  rotate: false
+  xy: 403, 105
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+PlayerBg
+  rotate: false
+  xy: 1, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1

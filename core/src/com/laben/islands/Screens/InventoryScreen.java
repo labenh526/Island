@@ -4,16 +4,23 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.laben.islands.IslandGame;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class InventoryScreen extends InfoScreen{
 
     private TextureAtlas inventoryAtlas;
 
-    public InventoryScreen(IslandGame game) {
-        super(game, ScreenType.INVENTORY);
+    private static Map<String, Class> inventoryScreenAssets;
 
-        getAssets().put("InventoryScreenTextures.atlas", TextureAtlas.class);
-        IslandGame.loadAllAssets(game.getManager(), getAssets());
-        game.getManager().finishLoading();
+    static {
+        inventoryScreenAssets = new HashMap<>();
+        inventoryScreenAssets.put("InventoryScreenTextures.atlas", TextureAtlas.class);
+    }
+
+    public InventoryScreen(IslandGame game) {
+        super(game, ScreenType.INVENTORY, inventoryScreenAssets);
+
         inventoryAtlas = game.getManager().get("InventoryScreenTextures.atlas");
 
         getInfoBoxBg().validate();
@@ -27,5 +34,6 @@ public class InventoryScreen extends InfoScreen{
         listBox.setPosition(listBoxX, listBoxY);
         getStage().addActor(listBox);
     }
+
 
 }
