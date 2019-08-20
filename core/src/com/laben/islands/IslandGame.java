@@ -48,6 +48,13 @@ public class IslandGame extends Game {
 		player.addItemToInventory(Item.masterItemSet.get(0));
 		player.addItemToInventory(Item.masterItemSet.get(2), 3);
 		player.addItemToInventory(Item.masterItemSet.get(0), 7);
+		player.addItemToInventory(Item.masterItemSet.get(3), 1);
+		player.addItemToInventory(Item.masterItemSet.get(4), 11);
+		player.addItemToInventory(Item.masterItemSet.get(5), 2);
+		player.addItemToInventory(Item.masterItemSet.get(6));
+		player.addItemToInventory(Item.masterItemSet.get(7), 19);
+		player.addItemToInventory(Item.masterItemSet.get(8), 2);
+		player.addItemToInventory(Item.masterItemSet.get(9));
 		setScreen(new InventoryScreen(this));
 		//setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
 	}

@@ -10,9 +10,23 @@ ListBox
   orig: 175, 150
   offset: 0, 0
   index: -1
-SortButton
+LeftButton
   rotate: false
   xy: 1, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+RightButton
+  rotate: false
+  xy: 178, 153
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+SortButton
+  rotate: false
+  xy: 67, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
