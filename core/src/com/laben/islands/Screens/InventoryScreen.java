@@ -215,6 +215,18 @@ public class InventoryScreen extends InfoScreen{
         useLabel.setFontScale(.5f);
         getStage().addActor(useLabel);
         darkenUseButton();
+        useLabel.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                if (currentlySelectedItem.usable(getGame()))
+                    useCurrentlySelectedItem();
+            }
+        });
 
         //Add value text
         final float valueTextWidth = descBoxXPos + descBoxSideSize - useLabelX - useLabelWidth;
@@ -372,21 +384,21 @@ public class InventoryScreen extends InfoScreen{
 
     private void setCurrentlySelectedItem(Item item) {
         currentlySelectedItem = item;
-        descTitle.setText(itemBundle.get(item.getNameKey()));
-        descText.setText(itemBundle.get(item.getDescKey()));
+        descTitle.setText(itemBundle.get(item == null ? "EmptyItem" : item.getNameKey()));
+        descText.setText(itemBundle.get(item == null ? "EmptyDesc" : item.getDescKey()));
         descImage.validate();
         float descImageX = descImage.getX();
         float descImageY = descImage.getY();
         float descImageWidth = descImage.getWidth();
         float descImageHeight = descImage.getHeight();
         descImage.remove();
-        descImage = new Image(itemAtlas.findRegion(item.getNameKey()));
+        descImage = new Image(itemAtlas.findRegion(item == null ? "Empty" : item.getNameKey()));
         descImage.setPosition(descImageX, descImageY);
         descImage.setSize(descImageWidth, descImageHeight);
         getStage().addActor(descImage);
-        valueLabel.setText(getInfoBundle().get("Value") + ": " + item.getValue());
+        valueLabel.setText(getInfoBundle().get("Value") + ": " + (item == null ? "??" : item.getValue()));
 
-        if (item.usable(getGame()))
+        if (item != null && item.usable(getGame()))
             normalizeUseButtonColor();
         else
             darkenUseButton();
@@ -416,6 +428,25 @@ public class InventoryScreen extends InfoScreen{
         currentlySelectedLabel2 = label2;
         label1.setStyle(selectedItemStyle);
         label2.setStyle(selectedItemStyle);
+    }
+
+    private void useCurrentlySelectedItem() {
+        getGame().getPlayer().removeItemFromInventory(currentlySelectedItem);
+        Item itemToUse = currentlySelectedItem;
+        if (getGame().getPlayer().getInventory().get(itemToUse) <= 0)
+            deselectCurrentItem();
+        resetInventoryTable();
+        itemToUse.use(getGame());
+    }
+
+    private void deselectCurrentItem() {
+        if (currentlySelectedItem != null) {
+            setCurrentlySelectedItem(null);
+            currentlySelectedLabel1.setStyle(itemStyle);
+            currentlySelectedLabel2.setStyle(itemStyle);
+            currentlySelectedLabel1 = null;
+            currentlySelectedLabel2 = null;
+        }
     }
 
 

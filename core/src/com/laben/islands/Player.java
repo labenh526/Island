@@ -67,5 +67,17 @@ public class Player {
         inventoryInBag = new LinkedHashSet<>(inventoryList);
     }
 
+    public void removeItemFromInventory(Item item) {
+        removeItemFromInventory(item, 1);
+    }
+
+    public void removeItemFromInventory(Item item, int quantity) {
+        inventory.put(item, inventory.get(item) - quantity);
+        if (inventory.get(item) == 0)
+            inventoryInBag.remove(item);
+        else if (inventory.get(item) < 0)
+            throw new IllegalStateException("Removed more items than possible");
+    }
+
 
 }
