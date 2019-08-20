@@ -32,7 +32,6 @@ public class Item implements Comparable<Item>{
         masterItemSet.add(new Item("HeavensNectar", 300, new BuffMaxStamina(5), ItemType.BuffStamina));
 
 
-
     }
 
 

@@ -52,212 +52,219 @@ DesertRock
   orig: 64, 64
   offset: 0, 0
   index: -1
-JungleGrass
+InfoButton
   rotate: false
   xy: 259, 425
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-JungleRock
+JungleGrass
   rotate: false
   xy: 517, 875
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-PlainsGrass
+JungleRock
   rotate: false
   xy: 583, 941
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-PlainsRock
+PlainsGrass
   rotate: false
   xy: 1, 101
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-SwampGrass
+PlainsRock
   rotate: false
   xy: 67, 167
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-SwampRock
+SwampGrass
   rotate: false
   xy: 259, 359
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-TundraGrass
+SwampRock
   rotate: false
   xy: 325, 425
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-TundraRock
+TundraGrass
   rotate: false
   xy: 517, 809
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-WoodsGrass
+TundraRock
   rotate: false
   xy: 583, 875
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-WoodsRock
+WoodsGrass
   rotate: false
   xy: 649, 941
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-DesertTree
+WoodsRock
   rotate: false
   xy: 1, 35
-  size: 32, 64
-  orig: 32, 64
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
-JungleTree
+DesertTree
   rotate: false
   xy: 67, 101
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
-PlainsTree
+JungleTree
   rotate: false
   xy: 133, 167
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
-SwampTree
+PlainsTree
   rotate: false
   xy: 259, 293
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
-TundraTree
+SwampTree
   rotate: false
   xy: 325, 359
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
-WoodsTree
+TundraTree
   rotate: false
   xy: 391, 425
   size: 32, 64
   orig: 32, 64
   offset: 0, 0
   index: -1
+WoodsTree
+  rotate: false
+  xy: 517, 743
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: -1
 RegionTextBox
   rotate: false
-  xy: 517, 775
+  xy: 583, 841
   size: 44, 32
   orig: 44, 32
   offset: 0, 0
   index: -1
 DesertBackground
   rotate: false
-  xy: 583, 841
+  xy: 649, 907
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 DesertMap
   rotate: false
-  xy: 649, 907
+  xy: 715, 973
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 JungleBackground
   rotate: false
-  xy: 715, 973
+  xy: 1, 1
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 JungleMap
   rotate: false
-  xy: 1, 1
+  xy: 67, 67
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 MiniMapBackground
   rotate: false
-  xy: 35, 67
+  xy: 101, 133
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 PlainsBackground
   rotate: false
-  xy: 101, 133
+  xy: 167, 199
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 PlainsMap
   rotate: false
-  xy: 167, 199
+  xy: 259, 259
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 SwampBackground
   rotate: false
-  xy: 259, 259
+  xy: 293, 325
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 SwampMap
   rotate: false
-  xy: 293, 325
+  xy: 359, 391
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 TundraBackground
   rotate: false
-  xy: 359, 391
+  xy: 425, 457
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 TundraMap
   rotate: false
-  xy: 425, 457
+  xy: 517, 709
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 WoodsBackground
   rotate: false
-  xy: 517, 741
+  xy: 749, 973
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 WoodsMap
   rotate: false
-  xy: 749, 973
+  xy: 101, 99
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

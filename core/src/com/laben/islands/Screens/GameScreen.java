@@ -212,6 +212,25 @@ public class GameScreen implements Screen {
         regionLabel.setFontScale(.3f);
         stage.addActor(regionLabel);
 
+        //Add info button
+        Image infoButton = new Image(atlas.findRegion("InfoButton"));
+        float infoButtonSideSize = gameTable.getWidth() * .2f;
+        infoButton.setSize(infoButtonSideSize, infoButtonSideSize);
+        infoButton.setPosition(miniMapBackground.getX(), miniMapBackground.getY() - infoButtonSideSize * 1.05f);
+        stage.addActor(infoButton);
+        infoButton.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                dispose();
+                game.setScreen(new InventoryScreen(game));
+            }
+        });
+
     }
 
 

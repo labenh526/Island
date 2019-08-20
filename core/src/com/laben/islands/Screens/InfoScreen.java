@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -23,14 +25,13 @@ public abstract class InfoScreen implements Screen {
     private Stage stage;
     private Map<String, Class> assets;
     private TextureAtlas atlas;
-    private TextureAtlas specificAtlas;
 
     private Image infoBoxBg; //used for relative positioning in child classes
     private I18NBundle infoBundle;
 
     public enum ScreenType {PLAYER, INVENTORY, CLUE}
 
-    public InfoScreen(IslandGame game, ScreenType screenType, Map<String, Class> assetMap) {
+    public InfoScreen(final IslandGame game, ScreenType screenType, Map<String, Class> assetMap) {
         this.game = game;
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
         Gdx.input.setInputProcessor(stage);
@@ -111,6 +112,24 @@ public abstract class InfoScreen implements Screen {
         float titleLabelXPos = infoBoxX + infoBoxWidth * .02f;
         float titleLabelYPos = infoBoxY + infoBoxHeight * .9f;
         titleLabel.setPosition(titleLabelXPos, titleLabelYPos);
+
+        //Add back button
+        Image back = new Image(atlas.findRegion("BackButton"));
+        back.setSize(tabWidth * .9f, tabHeight * .9f);
+        back.setPosition(initTabX+ tabWidth * 3.2f, initTabY + tabHeight *.09f);
+        stage.addActor(back);
+        back.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                dispose();
+                getGame().setScreen(new GameScreen(getGame(), getGame().getCurrentTile()));
+            }
+        });
 
     }
 
