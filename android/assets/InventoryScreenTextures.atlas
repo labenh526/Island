@@ -5,29 +5,43 @@ filter: Nearest,Nearest
 repeat: none
 ListBox
   rotate: false
-  xy: 1, 67
+  xy: 1, 99
   size: 175, 150
   orig: 175, 150
   offset: 0, 0
   index: -1
-LeftButton
+DescBox
   rotate: false
   xy: 1, 1
+  size: 112, 96
+  orig: 112, 96
+  offset: 0, 0
+  index: -1
+LeftButton
+  rotate: false
+  xy: 178, 185
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 RightButton
   rotate: false
-  xy: 178, 153
+  xy: 178, 119
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 SortButton
   rotate: false
-  xy: 67, 1
+  xy: 115, 33
   size: 64, 64
   orig: 64, 64
+  offset: 0, 0
+  index: -1
+UseButton
+  rotate: false
+  xy: 181, 69
+  size: 64, 48
+  orig: 64, 48
   offset: 0, 0
   index: -1

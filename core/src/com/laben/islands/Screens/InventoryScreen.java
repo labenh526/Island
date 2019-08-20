@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.laben.islands.IslandGame;
@@ -27,11 +28,15 @@ public class InventoryScreen extends InfoScreen{
         inventoryScreenAssets.put("Fonts/InventoryItemListTitle.fnt", BitmapFont.class);
         inventoryScreenAssets.put("Fonts/InventoryItemName.fnt", BitmapFont.class);
         inventoryScreenAssets.put("i18n/ItemBundle", I18NBundle.class);
+        inventoryScreenAssets.put("Fonts/ItemDescriptionTitle.fnt", BitmapFont.class);
+        inventoryScreenAssets.put("Fonts/ItemDescriptionText.fnt", BitmapFont.class);
+        inventoryScreenAssets.put("ItemTextures.atlas", TextureAtlas.class);
     }
 
     private TextureAtlas inventoryAtlas;
     private Table inventoryTable;
     private I18NBundle itemBundle;
+    private TextureAtlas itemAtlas;
     private int pageNum; //The page number
     private int maxPageNum; //The last page
     private final float inventoryTableWidth;
@@ -40,12 +45,19 @@ public class InventoryScreen extends InfoScreen{
     private final float inventoryTableY;
     private Label pageLabel;
     private Label.LabelStyle itemStyle;
+    private Item currentlySelectedItem;
+    private Label descTitle;
+    private Image descImage;
+    private Label descText;
+    private Label useLabel;
+    private Label valueLabel;
 
     public InventoryScreen(IslandGame game) {
         super(game, ScreenType.INVENTORY, inventoryScreenAssets);
 
         inventoryAtlas = game.getManager().get("InventoryScreenTextures.atlas");
         itemBundle = game.getManager().get("i18n/ItemBundle");
+        itemAtlas = game.getManager().get("ItemTextures.atlas");
 
         pageNum = 0; //default to page 1 (index 0)
         maxPageNum = (int)Math.ceil((double)game.getPlayer().getInventoryInBag().size() / (double)PAGE_LENGTH) - 1;
@@ -53,6 +65,8 @@ public class InventoryScreen extends InfoScreen{
         itemStyle = new Label.LabelStyle();
         itemStyle.font = getGame().getManager().get("Fonts/InventoryItemName.fnt");
         itemStyle.fontColor = Color.BLACK;
+
+        currentlySelectedItem = null;
 
         getInfoBoxBg().validate();
         //Add inventory list box
@@ -111,16 +125,98 @@ public class InventoryScreen extends InfoScreen{
         addInputDetection(rightArrow,  false);
 
         //Add page number label
-        float pageLabelWidth = listBoxWidth;
-        float pageLabelHeight = listBoxHeight * .1f;
-        float pageLabelX = listBoxX;
-        float pageLabelY = listBoxY + listBoxHeight * 1.01f;
+        final float pageLabelWidth = listBoxWidth;
+        final float pageLabelHeight = listBoxHeight * .1f;
+        final float pageLabelX = listBoxX;
+        final float pageLabelY = listBoxY + listBoxHeight * 1.01f;
         pageLabel = new Label(pageLabelText(), itemStyle);
         pageLabel.setSize(pageLabelWidth, pageLabelHeight);
         pageLabel.setPosition(pageLabelX, pageLabelY);
         pageLabel.setAlignment(Align.bottomLeft);
         pageLabel.setFontScale(.3f);
         getStage().addActor(pageLabel);
+
+        /* Initialize Description Box */
+        //Add description box bg
+        final float descBoxSideSize = getInfoBoxBg().getWidth() * .5f;
+        final float descBoxXPos = listBoxX + listBoxWidth + (getInfoBoxBg().getX() + getInfoBoxBg().getWidth() - listBoxX
+        - listBoxWidth - descBoxSideSize) / 2;
+        final float descBoxYPos = getInfoBoxBg().getY() + (getInfoBoxBg().getHeight() - descBoxSideSize) / 2;
+        Image descBox = new Image(inventoryAtlas.findRegion("DescBox"));
+        descBox.setSize(descBoxSideSize, descBoxSideSize);
+        descBox.setPosition(descBoxXPos, descBoxYPos);
+        getStage().addActor(descBox);
+
+        //Add desc title
+        final float descTitleWidth = descBoxSideSize * 31f / 32f;
+        final float descTitleHeight = descBoxSideSize * .15f;
+        final float descTitleX = descBoxXPos + descBoxSideSize * 1f / 64f;
+        final float descTitleY = descBoxYPos + descBoxSideSize * 63f / 64f - descTitleHeight;
+        Label.LabelStyle descTitleStyle = new Label.LabelStyle();
+        descTitleStyle.font = getGame().getManager().get("Fonts/ItemDescriptionTitle.fnt");
+        descTitleStyle.fontColor = Color.BLACK;
+        descTitle = new Label(itemBundle.get("EmptyItem"), descTitleStyle);
+        descTitle.setFontScale(.6f);
+        descTitle.setPosition(descTitleX, descTitleY);
+        descTitle.setSize(descTitleWidth, descTitleHeight);
+        descTitle.setAlignment(Align.center);
+        getStage().addActor(descTitle);
+
+        //Add image
+        final float descImageSideSize = descTitleWidth * .3f;
+        final float descImageX = descTitleX + (descTitleWidth - descImageSideSize) / 2f;
+        final float descImageY = descTitleY - descImageSideSize;
+        descImage = new Image(itemAtlas.findRegion("Empty"));
+        descImage.setSize(descImageSideSize, descImageSideSize);
+        descImage.setPosition(descImageX, descImageY);
+        getStage().addActor(descImage);
+
+        //Add description text
+        final float descTextWidth = descBoxSideSize * 15f / 16f; //Extra pixel on each side for margins
+        final float descTextHeight = descBoxSideSize * .3f;
+        final float descTextX = descBoxXPos + descBoxSideSize * 1f / 32f;
+        final float descTextY = descImageY - descTextHeight - descImageSideSize * .2f;
+        Label.LabelStyle descTextStyle = new Label.LabelStyle();
+        descTextStyle.font = getGame().getManager().get("Fonts/ItemDescriptionText.fnt");
+        descTextStyle.fontColor = Color.BLACK;
+        descText = new Label(itemBundle.get("EmptyDesc"), descTextStyle);
+        descText.setFontScale(.4f);
+        descText.setPosition(descTextX, descTextY);
+        descText.setSize(descTextWidth, descTextHeight);
+        descText.setAlignment(Align.topLeft);
+        descText.setWrap(true);
+        getStage().addActor(descText);
+
+        //Add use button
+        final float useLabelWidth = descBoxSideSize * .2f;
+        final float useLabelHeight = useLabelWidth * 3f / 4f;
+        final float useLabelX = descTextX;
+        final float useLabelY = descTextY - useLabelHeight * 1.05f;
+        Label.LabelStyle useLabelStyle = new Label.LabelStyle();
+        useLabelStyle.font = getGame().getManager().get("Fonts/InventoryItemName.fnt");
+        useLabelStyle.fontColor = Color.BLACK;
+        useLabelStyle.background = new TextureRegionDrawable(inventoryAtlas.findRegion("UseButton"));
+        useLabel = new Label(getInfoBundle().get("Use"), useLabelStyle);
+        useLabel.setPosition(useLabelX, useLabelY);
+        useLabel.setSize(useLabelWidth, useLabelHeight);
+        useLabel.setAlignment(Align.center);
+        useLabel.setFontScale(.5f);
+        getStage().addActor(useLabel);
+        darkenUseButton();
+
+        //Add value text
+        final float valueTextWidth = descBoxXPos + descBoxSideSize - useLabelX - useLabelWidth;
+        final float valueTextHeight = useLabelHeight;
+        final float valueTextX = useLabelX + useLabelWidth * 1.2f;
+        final float valueTextY = useLabelY;
+        Label.LabelStyle valueTextStyle = new Label.LabelStyle(descTextStyle);
+        valueTextStyle.fontColor = Color.CYAN;
+        valueLabel = new Label(getInfoBundle().get("Value")+ ": ??", valueTextStyle);
+        valueLabel.setPosition(valueTextX, valueTextY);
+        valueLabel.setSize(valueTextWidth, valueTextHeight);
+        valueLabel.setAlignment(Align.left);
+        valueLabel.setFontScale(.4f);
+        getStage().addActor(valueLabel);
 
     }
 
@@ -186,7 +282,7 @@ public class InventoryScreen extends InfoScreen{
         super.dispose();
     }
 
-    public void addInputDetection(Image arrow, final boolean left) {
+    private void addInputDetection(Image arrow, final boolean left) {
         if (pageNum != maxPageNum) {
             arrow.addListener(new InputListener() {
                 @Override
@@ -207,14 +303,14 @@ public class InventoryScreen extends InfoScreen{
         }
     }
 
-    public void resetInventoryTable() {
+    private void resetInventoryTable() {
         inventoryTable.remove();
         inventoryTable = inventoryTable(inventoryTableWidth, inventoryTableHeight,
                 inventoryTableX, inventoryTableY);
         getStage().addActor(inventoryTable);
     }
 
-    public void decrementPageNum() {
+    private void decrementPageNum() {
         if (pageNum <= 0)
             pageNum = maxPageNum;
         else
@@ -222,7 +318,7 @@ public class InventoryScreen extends InfoScreen{
         pageLabel.setText(pageLabelText());
     }
 
-    public void incrementPageNum() {
+    private void incrementPageNum() {
         if (pageNum >= maxPageNum)
             pageNum = 0;
         else
@@ -230,7 +326,7 @@ public class InventoryScreen extends InfoScreen{
         pageLabel.setText(pageLabelText());
     }
 
-    public String pageLabelText() {
+    private String pageLabelText() {
         StringBuilder sb = new StringBuilder(getInfoBundle().get("Page"));
         sb.append(" ");
         sb.append(pageNum + 1);
@@ -238,6 +334,15 @@ public class InventoryScreen extends InfoScreen{
         sb.append(maxPageNum + 1);
         return sb.toString();
     }
+
+    private void darkenUseButton() {
+        useLabel.setColor(1f, 1f, 1f, .4f);
+    }
+
+    private void normalizeUseButtonColor() {
+        useLabel.setColor(1f, 1f, 1f, 1f);
+    }
+
 
 
 }

@@ -52,10 +52,14 @@ public class Item implements Comparable<Item>{
         script.execute(game);
     }
 
+    //Check if the item is currently usable
+    public boolean usable(IslandGame game) {
+        return script.usable(game);
+    }
+
     public String getNameKey() {
         return nameKey;
     }
-
 
     public int getValue() {
         return value;
@@ -100,6 +104,8 @@ public class Item implements Comparable<Item>{
     private interface ItemScript {
         //Executes the script
         void execute(IslandGame game);
+        //Whether or not the item is usable
+        boolean usable(IslandGame game);
     }
 
     /* Scripts for all items: */
@@ -119,6 +125,11 @@ public class Item implements Comparable<Item>{
             currentStamina += staminaAmount;
             game.getPlayer().setStamina(currentStamina > maxStamina ? maxStamina : currentStamina);
         }
+
+        @Override
+        public boolean usable(IslandGame game) {
+            return game.getPlayer().getStamina() != game.getPlayer().getMaxStamina();
+        }
     }
 
     //Heals stamina by a % of max stamina
@@ -137,6 +148,11 @@ public class Item implements Comparable<Item>{
             currentStamina += percentStamina;
             game.getPlayer().setStamina(currentStamina > maxStamina ? maxStamina : currentStamina);
         }
+
+        @Override
+        public boolean usable(IslandGame game) {
+            return game.getPlayer().getStamina() != game.getPlayer().getMaxStamina();
+        }
     }
 
     //Increases max stamina by a given amount
@@ -153,6 +169,11 @@ public class Item implements Comparable<Item>{
             int currentStamina = game.getPlayer().getStamina();
             game.getPlayer().setMaxStamina(maxStamina + amount);
             game.getPlayer().setStamina(currentStamina + amount);
+        }
+
+        @Override
+        public boolean usable(IslandGame game) {
+            return true;
         }
     }
 
