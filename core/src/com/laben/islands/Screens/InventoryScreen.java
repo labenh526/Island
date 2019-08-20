@@ -45,6 +45,9 @@ public class InventoryScreen extends InfoScreen{
     private final float inventoryTableY;
     private Label pageLabel;
     private Label.LabelStyle itemStyle;
+    private Label.LabelStyle selectedItemStyle;
+    private Label currentlySelectedLabel1;
+    private Label currentlySelectedLabel2;
     private Item currentlySelectedItem;
     private Label descTitle;
     private Image descImage;
@@ -59,14 +62,17 @@ public class InventoryScreen extends InfoScreen{
         itemBundle = game.getManager().get("i18n/ItemBundle");
         itemAtlas = game.getManager().get("ItemTextures.atlas");
 
+        currentlySelectedItem = null;
+
         pageNum = 0; //default to page 1 (index 0)
         maxPageNum = (int)Math.ceil((double)game.getPlayer().getInventoryInBag().size() / (double)PAGE_LENGTH) - 1;
 
         itemStyle = new Label.LabelStyle();
         itemStyle.font = getGame().getManager().get("Fonts/InventoryItemName.fnt");
         itemStyle.fontColor = Color.BLACK;
+        selectedItemStyle = new Label.LabelStyle(itemStyle);
+        selectedItemStyle.background = new TextureRegionDrawable(inventoryAtlas.findRegion("SelectedLabel"));
 
-        currentlySelectedItem = null;
 
         getInfoBoxBg().validate();
         //Add inventory list box
@@ -105,6 +111,12 @@ public class InventoryScreen extends InfoScreen{
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 getGame().getPlayer().sortInventory();
+                if (currentlySelectedItem != null) {
+                    int pageNumOfItem = pageNumOfItem(currentlySelectedItem);
+                    if (pageNumOfItem != pageNum) {
+                        setPageNum(pageNumOfItem);
+                    }
+                }
                 //Re-add inventory table
                 resetInventoryTable();
             }
@@ -264,14 +276,19 @@ public class InventoryScreen extends InfoScreen{
             itemNumLabel.setFontScale(.35f);
             itemNumLabel.setAlignment(Align.topLeft);
             itemNumLabel.setWidth(itemNumWidth);
-            table.add(itemLabel).width(itemNumWidth).fillY().top().left();
+            table.add(itemLabel).width(itemNameWidth).fillY().top().left();
             table.add(itemNumLabel).width(itemNumWidth).fillY().top();
+            addInputToItemInInventory(itemLabel, item, itemLabel, itemNumLabel);
+            addInputToItemInInventory(itemNumLabel, item, itemLabel, itemNumLabel);
+            if (item.equals(currentlySelectedItem))
+                setCurrentlySelectedLabel(itemLabel, itemNumLabel);
         }
         //This essentially aligns the cells of the table to the top
         if (itemLabel != null) {
             table.getCell(itemLabel).expand();
             table.getCell(itemNumLabel).expand();
         }
+
 
         return table;
     }
@@ -326,6 +343,16 @@ public class InventoryScreen extends InfoScreen{
         pageLabel.setText(pageLabelText());
     }
 
+    private void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
+        pageLabel.setText(pageLabelText());
+    }
+
+    private int pageNumOfItem(Item item) {
+        int itemIndex = new ArrayList<>(getGame().getPlayer().getInventoryInBag()).indexOf(item);
+        return itemIndex / PAGE_LENGTH;
+    }
+
     private String pageLabelText() {
         StringBuilder sb = new StringBuilder(getInfoBundle().get("Page"));
         sb.append(" ");
@@ -341,6 +368,54 @@ public class InventoryScreen extends InfoScreen{
 
     private void normalizeUseButtonColor() {
         useLabel.setColor(1f, 1f, 1f, 1f);
+    }
+
+    private void setCurrentlySelectedItem(Item item) {
+        currentlySelectedItem = item;
+        descTitle.setText(itemBundle.get(item.getNameKey()));
+        descText.setText(itemBundle.get(item.getDescKey()));
+        descImage.validate();
+        float descImageX = descImage.getX();
+        float descImageY = descImage.getY();
+        float descImageWidth = descImage.getWidth();
+        float descImageHeight = descImage.getHeight();
+        descImage.remove();
+        descImage = new Image(itemAtlas.findRegion(item.getNameKey()));
+        descImage.setPosition(descImageX, descImageY);
+        descImage.setSize(descImageWidth, descImageHeight);
+        getStage().addActor(descImage);
+        valueLabel.setText(getInfoBundle().get("Value") + ": " + item.getValue());
+
+        if (item.usable(getGame()))
+            normalizeUseButtonColor();
+        else
+            darkenUseButton();
+    }
+
+    private void addInputToItemInInventory(Label label, final Item item, final Label selectedLabel1, final Label selectedLabel2) {
+        label.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                setCurrentlySelectedItem(item);
+                setCurrentlySelectedLabel(selectedLabel1, selectedLabel2);
+            }
+        });
+    }
+
+    private void setCurrentlySelectedLabel(Label label1, Label label2) {
+        if (currentlySelectedLabel1 != null && currentlySelectedLabel2 != null) {
+            currentlySelectedLabel1.setStyle(itemStyle);
+            currentlySelectedLabel2.setStyle(itemStyle);
+        }
+        currentlySelectedLabel1 = label1;
+        currentlySelectedLabel2 = label2;
+        label1.setStyle(selectedItemStyle);
+        label2.setStyle(selectedItemStyle);
     }
 
 

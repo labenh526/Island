@@ -1,5 +1,8 @@
 package com.laben.islands.items;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.laben.islands.IslandGame;
 
 import java.util.*;
@@ -45,6 +48,7 @@ public class Item implements Comparable<Item>{
         this.script = script;
         this.value = value;
         this.type = type;
+
     }
 
     //Use the item. If it is an equip, then this equips the item
@@ -63,6 +67,10 @@ public class Item implements Comparable<Item>{
 
     public int getValue() {
         return value;
+    }
+
+    public String getDescKey() {
+        return nameKey + "Desc";
     }
 
     @Override

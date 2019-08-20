@@ -45,3 +45,10 @@ UseButton
   orig: 64, 48
   offset: 0, 0
   index: -1
+SelectedLabel
+  rotate: false
+  xy: 115, 15
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
