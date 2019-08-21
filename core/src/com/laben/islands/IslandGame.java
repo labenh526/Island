@@ -5,6 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.laben.islands.Screens.GameScreen;
 import com.laben.islands.Screens.InfoScreen;
 import com.laben.islands.Screens.InventoryScreen;
@@ -28,6 +29,7 @@ public class IslandGame extends Game {
 	private Tile currentTile; //The current tile that the player is on
 	private Application.ApplicationType platform;
 	private Player player;
+	private boolean inputAllowed;
 	
 	@Override
 	public void create () {
@@ -37,7 +39,10 @@ public class IslandGame extends Game {
 		GAME_WIDTH = Application.ApplicationType.Android.equals(Gdx.app.getType()) ? 480 : 800;
 		GAME_HEIGHT = Application.ApplicationType.Android.equals(Gdx.app.getType()) ? 640 : 480;
 
+		inputAllowed = true;
+
 		manager = new AssetManager();
+		manager.load("i18n/GeneralBundle", I18NBundle.class);
 		//create player
 		player = new Player();
 		player.setStamina(1);
@@ -155,4 +160,15 @@ public class IslandGame extends Game {
 			assetManager.unload(asset);
 	}
 
+	public boolean isInputAllowed() {
+		return inputAllowed;
+	}
+
+	public void setInputAllowed(boolean inputAllowed) {
+		this.inputAllowed = inputAllowed;
+	}
+
+	public I18NBundle getGeneralBundle() {
+		return manager.get("i18n/GeneralBundle");
+	}
 }

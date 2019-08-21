@@ -437,6 +437,8 @@ public class InventoryScreen extends InfoScreen{
             deselectCurrentItem();
         resetInventoryTable();
         itemToUse.use(getGame());
+        if (currentlySelectedItem != null && !currentlySelectedItem.usable(getGame()))
+            darkenUseButton();
     }
 
     private void deselectCurrentItem() {

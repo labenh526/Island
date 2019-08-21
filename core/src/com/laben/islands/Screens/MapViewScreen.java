@@ -315,7 +315,7 @@ public class MapViewScreen implements Screen {
         String[] twoPartsOfName = currentSelectedRegion.split("\\s+");
         StringBuilder splitUpName = new StringBuilder(twoPartsOfName[0]);
         splitUpName.append("\n");
-        splitUpName.append(twoPartsOfName[1]);
+        splitUpName.append(game.getGeneralBundle().get(twoPartsOfName[1]));
         getSelectedRegionLabel().setText(splitUpName);
         addSelectedRegionOutline();
     }

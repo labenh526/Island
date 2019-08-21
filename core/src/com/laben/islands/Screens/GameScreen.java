@@ -203,7 +203,7 @@ public class GameScreen implements Screen {
         String[] splitRegionNameArray = tile.getRegion().toString().split("\\s+");
         StringBuilder splitRegionName = new StringBuilder(splitRegionNameArray[0]);
         splitRegionName.append("\n");
-        splitRegionName.append(splitRegionNameArray[1]);
+        splitRegionName.append(game.getGeneralBundle().get(splitRegionNameArray[1]));
         Label regionLabel = new Label(splitRegionName.toString(), regionTextStyle);
         //regionLabel.setAlignment(Align.topLeft);
         regionLabel.setSize(regionTextBoxWidth * .9f, regionTextBoxHeight * .9f);
