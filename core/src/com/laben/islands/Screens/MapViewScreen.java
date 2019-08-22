@@ -26,7 +26,7 @@ import java.util.*;
 
 /** This is the screen that shows when viewing a map
  * **/
-public class MapViewScreen implements Screen {
+public class MapViewScreen extends AbstractScreen {
 
     private final IslandGame game;
 
@@ -338,5 +338,10 @@ public class MapViewScreen implements Screen {
                 setCurrentSelectedRegion(region.toString());
             }
         });
+    }
+
+    @Override
+    public Stage getStage() {
+        return stage;
     }
 }

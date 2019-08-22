@@ -23,7 +23,7 @@ import com.laben.islands.*;
 
 import java.util.*;
 
-public class GameScreen implements Screen {
+public class GameScreen extends AbstractScreen{
 
     public static final float GAME_TABLE_WIDTH = .55f * (float) IslandGame.GAME_WIDTH;
     public static final float GAME_TABLE_HEIGHT = 11f / 12f * (float)IslandGame.getGameHeight();
@@ -253,22 +253,22 @@ public class GameScreen implements Screen {
         setStaminaBarWidth();
         stage.draw();
 
+
         //Check if arrow keys pressed
-        if (tile.tileAbove() != null && Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            game.setCurrentTile(tile.tileAbove());
-            game.loadGameScreen();
-        }
-        else if (tile.tileBelow() != null && Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            game.setCurrentTile(tile.tileBelow());
-            game.loadGameScreen();
-        }
-        else if (tile.tileRight() != null && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
-            game.setCurrentTile(tile.tileRight());
-            game.loadGameScreen();
-        }
-        else if (tile.tileLeft() != null && Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
-            game.setCurrentTile(tile.tileLeft());
-            game.loadGameScreen();
+        if (game.isInputAllowed()) {
+            if (tile.tileAbove() != null && Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                game.setCurrentTile(tile.tileAbove());
+                game.loadGameScreen();
+            } else if (tile.tileBelow() != null && Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                game.setCurrentTile(tile.tileBelow());
+                game.loadGameScreen();
+            } else if (tile.tileRight() != null && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+                game.setCurrentTile(tile.tileRight());
+                game.loadGameScreen();
+            } else if (tile.tileLeft() != null && Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                game.setCurrentTile(tile.tileLeft());
+                game.loadGameScreen();
+            }
         }
 
     }
@@ -489,4 +489,8 @@ public class GameScreen implements Screen {
         }
     }
 
+    @Override
+    public Stage getStage() {
+        return stage;
+    }
 }

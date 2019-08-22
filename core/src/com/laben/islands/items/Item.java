@@ -132,6 +132,7 @@ public class Item implements Comparable<Item>{
             int currentStamina = game.getPlayer().getStamina();
             currentStamina += staminaAmount;
             game.getPlayer().setStamina(currentStamina > maxStamina ? maxStamina : currentStamina);
+            game.displayTextBox("StaminaRegen");
         }
 
         @Override
@@ -155,6 +156,7 @@ public class Item implements Comparable<Item>{
             int percentStamina = (int)((double)maxStamina * percent);
             currentStamina += percentStamina;
             game.getPlayer().setStamina(currentStamina > maxStamina ? maxStamina : currentStamina);
+            game.displayTextBox("StaminaRegen");
         }
 
         @Override
@@ -177,6 +179,7 @@ public class Item implements Comparable<Item>{
             int currentStamina = game.getPlayer().getStamina();
             game.getPlayer().setMaxStamina(maxStamina + amount);
             game.getPlayer().setStamina(currentStamina + amount);
+            game.displayTextBox("MaxStaminaBuff");
         }
 
         @Override

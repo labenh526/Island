@@ -1,18 +1,24 @@
 package com.laben.islands;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.laben.islands.Screens.*;
 import com.laben.islands.Screens.GameScreen;
-import com.laben.islands.Screens.InfoScreen;
-import com.laben.islands.Screens.InventoryScreen;
 import com.laben.islands.Screens.MapViewScreen;
 import com.laben.islands.items.Item;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /** This Class is the main game class which manages the game and is created upon the games initialization
@@ -30,6 +36,16 @@ public class IslandGame extends Game {
 	private Application.ApplicationType platform;
 	private Player player;
 	private boolean inputAllowed;
+	private Map<String, Class> assets;
+	private TextureAtlas atlas;
+
+	//For text boxes:
+	private InputProcessor currentInput;
+	private Stage currentStage;
+	private Image grey;
+	private Image textBox;
+	private Label text;
+	private Label.LabelStyle textStyle;
 	
 	@Override
 	public void create () {
@@ -42,7 +58,11 @@ public class IslandGame extends Game {
 		inputAllowed = true;
 
 		manager = new AssetManager();
-		manager.load("i18n/GeneralBundle", I18NBundle.class);
+		assets = new HashMap<>();
+		assets.put("i18n/GeneralBundle", I18NBundle.class);
+		assets.put("GeneralTextures.atlas", TextureAtlas.class);
+		assets.put("Fonts/TextBox.fnt", BitmapFont.class);
+		loadAllAssets(manager, assets);
 		//create player
 		player = new Player();
 		player.setStamina(1);
@@ -62,16 +82,35 @@ public class IslandGame extends Game {
 		player.addItemToInventory(Item.masterItemSet.get(9));
 		setScreen(new InventoryScreen(this));
 		//setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
+
+		manager.finishLoading();
+		atlas = manager.get("GeneralTextures.atlas");
+
+		//For TextBox
+		textStyle = new Label.LabelStyle();
+		textStyle.font = manager.get("Fonts/TextBox.fnt");
+		textStyle.fontColor = Color.BLACK;
+
+	}
+
+	@Override
+	public void setScreen(Screen screen) {
+		currentStage = ((AbstractScreen)screen).getStage();
+		super.setScreen(screen);
 	}
 
 	@Override
 	public void render () {
 		super.render();
+		if (currentInput != null && (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)))
+			finishDisplayingTextBox();
+
 	}
 	
 	@Override
 	public void dispose () {
 		getScreen().dispose(); //dispose of all disposables in the current screen
+		unloadAllAssets(manager, assets.keySet());
 	}
 
 	//Sets the the player's starting position in the middle of the bottom row
@@ -170,5 +209,50 @@ public class IslandGame extends Game {
 
 	public I18NBundle getGeneralBundle() {
 		return manager.get("i18n/GeneralBundle");
+	}
+
+	//Input the key to the text that is displayed
+	public void displayTextBox(String textKey) {
+		//Disallow input
+		setInputAllowed(false);
+		currentInput = Gdx.input.getInputProcessor();
+		Gdx.input.setInputProcessor(null);
+		//Grey out
+		grey = new Image(atlas.findRegion("Grey"));
+		grey.setPosition(0, 0);
+		grey.setSize(getGameWidth(), getGameHeight());
+		currentStage.addActor(grey);
+		//Add text box
+		textBox = new Image(atlas.findRegion("TextBox"));
+		textBox.setSize(getGameWidth(), (float)getGameHeight() / 3f);
+		textBox.setPosition(0,0);
+		currentStage.addActor(textBox);
+		//Add text
+		text = new Label(getGeneralBundle().get(textKey), textStyle);
+		text.setWrap(true);
+		text.setFontScale(.4f);
+		textBox.validate();
+		text.setSize(textBox.getWidth() * 792f / 800f, textBox.getHeight() * 152f / 160f);
+		text.setPosition(textBox.getX() + textBox.getWidth() * 4f / 800f,
+				textBox.getY() + textBox.getHeight() * 4f / 160f);
+		text.setAlignment(Align.topLeft);
+		currentStage.addActor(text);
+	}
+
+	private void finishDisplayingTextBox() {
+		Gdx.input.setInputProcessor(currentInput);
+		currentInput = null;
+		setInputAllowed(true);
+		grey.remove();
+		textBox.remove();
+		text.remove();
+	}
+
+	public Stage getCurrentStage() {
+		return currentStage;
+	}
+
+	public void setCurrentStage(Stage currentStage) {
+		this.currentStage = currentStage;
 	}
 }

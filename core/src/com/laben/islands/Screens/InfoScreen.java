@@ -19,7 +19,7 @@ import com.laben.islands.IslandGame;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class InfoScreen implements Screen {
+public abstract class InfoScreen extends AbstractScreen {
 
     private IslandGame game;
     private Stage stage;
@@ -183,7 +183,8 @@ public abstract class InfoScreen implements Screen {
         return infoBoxBg;
     }
 
-    Stage getStage() {
+    @Override
+    public Stage getStage() {
         return stage;
     }
 
