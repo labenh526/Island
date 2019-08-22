@@ -223,7 +223,7 @@ public class InventoryScreen extends InfoScreen{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (currentlySelectedItem.usable(getGame()))
+                if (currentlySelectedItem != null && currentlySelectedItem.usable(getGame()))
                     useCurrentlySelectedItem();
             }
         });

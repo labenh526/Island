@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -80,8 +81,8 @@ public class IslandGame extends Game {
 		player.addItemToInventory(Item.masterItemSet.get(7), 19);
 		player.addItemToInventory(Item.masterItemSet.get(8), 2);
 		player.addItemToInventory(Item.masterItemSet.get(9));
-		setScreen(new InventoryScreen(this));
-		//setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
+		//setScreen(new InventoryScreen(this));
+		setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
 
 		manager.finishLoading();
 		atlas = manager.get("GeneralTextures.atlas");
@@ -239,6 +240,32 @@ public class IslandGame extends Game {
 		currentStage.addActor(text);
 	}
 
+	//Draws a stamina bar to the current stage. Returns the stamina bar object
+	public static StaminaBar createStaminaBar(Stage stage, TextureRegion bg, TextureRegion greyBg, TextureRegion bar,
+									   float xPos, float yPos, float width, float height) {
+		Image staminaBackground = new Image(bg);
+		staminaBackground.setSize(width, height);
+		staminaBackground.setPosition(xPos, yPos);
+		stage.addActor(staminaBackground);
+
+		//Create stamina bar
+		staminaBackground.validate();
+		Image staminaBar = new Image(bar);
+		staminaBar.setHeight(.8f * height);
+		staminaBar.setPosition(xPos + .05f * width, yPos + .1f * height);
+		float maxStaminaWidth = staminaBackground.getWidth() * .9f;
+		stage.addActor(staminaBar);
+
+		//Create grey background to stamina bar
+		staminaBar.validate();
+		Image greyStaminaBackground = new Image(greyBg);
+		greyStaminaBackground.setPosition(staminaBar.getX(), staminaBar.getY());
+		greyStaminaBackground.setSize(maxStaminaWidth, staminaBar.getHeight());
+		stage.addActor(greyStaminaBackground);
+
+		return new StaminaBar(staminaBackground, staminaBar, greyStaminaBackground, maxStaminaWidth);
+	}
+
 	private void finishDisplayingTextBox() {
 		Gdx.input.setInputProcessor(currentInput);
 		currentInput = null;
@@ -248,11 +275,43 @@ public class IslandGame extends Game {
 		text.remove();
 	}
 
-	public Stage getCurrentStage() {
-		return currentStage;
+
+	public static class StaminaBar {
+		final Image blackBackground;
+		final Image bar;
+		final Image greyBackground;
+		final float maxStaminaWidth;
+
+		private StaminaBar(Image blackBackground, Image bar, Image greyBackground, float maxStaminaWidth) {
+			this.bar = bar;
+			this.blackBackground = blackBackground;
+			this.greyBackground = greyBackground;
+			this.maxStaminaWidth = maxStaminaWidth;
+		}
+
+		public Image getBlackBackground() {
+			return blackBackground;
+		}
+
+		public Image getBar() {
+			return bar;
+		}
+
+		public Image getGreyBackground() {
+			return greyBackground;
+		}
+
+		public float getMaxStaminaWidth() {
+			return maxStaminaWidth;
+		}
+
+		//Instantaneously changes the stamina bar to reflect the player's current stamina
+		public void updateStaminaInstantaneous(IslandGame game) {
+			getBar().setWidth((float)game.getPlayer().getStamina() /  (float)game.getPlayer().getMaxStamina()  *
+					getMaxStaminaWidth());
+			getBar().toFront();
+		}
 	}
 
-	public void setCurrentStage(Stage currentStage) {
-		this.currentStage = currentStage;
-	}
+
 }

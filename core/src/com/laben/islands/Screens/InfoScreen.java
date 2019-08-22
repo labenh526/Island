@@ -1,7 +1,6 @@
 package com.laben.islands.Screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -28,6 +27,10 @@ public abstract class InfoScreen extends AbstractScreen {
 
     private Image infoBoxBg; //used for relative positioning in child classes
     private I18NBundle infoBundle;
+    private IslandGame.StaminaBar staminaBar;
+    private Label staminaText;
+    private int currentStamina;
+    private int currentMaxStamina;
 
     public enum ScreenType {PLAYER, INVENTORY, CLUE}
 
@@ -41,10 +44,14 @@ public abstract class InfoScreen extends AbstractScreen {
         assets.put("InfoScreenTextures.atlas", TextureAtlas.class);
         assets.put("Fonts/InfoViewTitle.fnt", BitmapFont.class);
         assets.put("i18n/InfoViewBundle", I18NBundle.class);
+        assets.put("Fonts/StaminaTextFont.fnt", BitmapFont.class);
         IslandGame.loadAllAssets(game.getManager(), assets);
         game.getManager().finishLoading();
         atlas = game.getManager().get("InfoScreenTextures.atlas");
         infoBundle = game.getManager().get("i18n/InfoViewBundle");
+
+        currentMaxStamina = 0;
+        currentStamina = 0;
 
         //Positional data calculations
         float tabWidth = IslandGame.GAME_WIDTH * .1f;
@@ -71,6 +78,7 @@ public abstract class InfoScreen extends AbstractScreen {
         clueTab.setSize(tabWidth, tabHeight);
         clueTab.setPosition(initTabX + tabWidth * 2f, initTabY);
         stage.addActor(clueTab);
+
 
         //Add main information box
         String bgImg = "ClueBg";
@@ -131,6 +139,29 @@ public abstract class InfoScreen extends AbstractScreen {
             }
         });
 
+        //Add Stamina bar
+        back.validate();
+        float staminaWidth = IslandGame.getGameWidth() * .25f;
+        float staminaHeight = back.getHeight() / 2f;
+        float staminaXPos = back.getX() + back.getWidth() * 1.3f;
+        float staminaYPos = back.getY();
+        staminaBar = IslandGame.createStaminaBar(stage, atlas.findRegion("StaminaBackground"),
+                atlas.findRegion("GreyStaminaBackground"), atlas.findRegion("StaminaBar"),
+                staminaXPos, staminaYPos, staminaWidth, staminaHeight);
+        //Add stamina text
+        Label.LabelStyle staminaStyle = new Label.LabelStyle();
+        staminaStyle.fontColor = Color.BLACK;
+        staminaStyle.font = game.getManager().get("Fonts/StaminaTextFont.fnt");
+        staminaText = new Label("", staminaStyle);
+        float staminaTextX = staminaXPos;
+        float staminaTextY = staminaYPos + staminaHeight;
+        float staminaTextWidth = staminaWidth;
+        float staminaTextHeight = back.getHeight() - staminaHeight;
+        staminaText.setPosition(staminaTextX, staminaTextY);
+        staminaText.setSize(staminaTextWidth, staminaTextHeight);
+        staminaText.setAlignment(Align.topLeft);
+        stage.addActor(staminaText);
+
     }
 
     @Override
@@ -143,6 +174,8 @@ public abstract class InfoScreen extends AbstractScreen {
         //Graphics:
         Gdx.gl.glClearColor((float)(204/255.0), 0, (float)(102/255.0), 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        staminaBar.updateStaminaInstantaneous(game);
+        updateStaminaText();
         stage.draw();
 
     }
@@ -194,5 +227,16 @@ public abstract class InfoScreen extends AbstractScreen {
 
     I18NBundle getInfoBundle() {
         return infoBundle;
+    }
+
+    private void updateStaminaText() {
+        if (currentStamina != game.getPlayer().getStamina() || currentMaxStamina != game.getPlayer().getMaxStamina()) {
+            StringBuilder sb = new StringBuilder(game.getGeneralBundle().get("Stamina"));
+            sb.append(" ");
+            sb.append(game.getPlayer().getStamina());
+            sb.append("/");
+            sb.append(game.getPlayer().getMaxStamina());
+            staminaText.setText(sb.toString());
+        }
     }
 }

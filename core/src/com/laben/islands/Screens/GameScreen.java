@@ -35,9 +35,9 @@ public class GameScreen extends AbstractScreen{
     private TextureAtlas atlas;
     private final Tile tile;
     private Label staminaLabel;
-    private float maxStaminaWidth;
-    private Image staminaBar;
     private Table rootTable;
+    private IslandGame.StaminaBar staminaBar;
+
 
     public GameScreen(final IslandGame game, final Tile tile) {
         this.game = game;
@@ -89,30 +89,17 @@ public class GameScreen extends AbstractScreen{
                 gameTable.getHeight())).y - staminaLabel.getHeight();
         staminaLabel.setPosition(staminaLabelXPos, staminaLabelYPos);
 
-        //Create stamina background
+
         staminaLabel.validate();
-        Image staminaBackground = new Image(atlas.findRegion("StaminaBackground"));
-        staminaBackground.setSize(.35f * (float)IslandGame.getGameWidth(),
-                .06f * (float)IslandGame.getGameHeight());
-        staminaBackground.setPosition(staminaLabel.getX(),
-                staminaLabel.getY() - staminaBackground.getHeight() + .04f * (float)IslandGame.getGameHeight());
-        stage.addActor(staminaBackground);
+        float staminaBarWidth = .35f * (float)IslandGame.getGameWidth();
+        float staminaBarHeight = .06f * (float)IslandGame.getGameHeight();
+        float staminaBarX = staminaLabel.getX();
+        float staminaBarY = staminaLabel.getY()  - staminaBarHeight  + .04f * (float)IslandGame.getGameHeight();
 
-        //Create stamina bar
-        staminaBackground.validate();
-        staminaBar = new Image(atlas.findRegion("StaminaBar"));
-        staminaBar.setHeight(.8f * staminaBackground.getHeight());
-        staminaBar.setPosition(staminaBackground.getX() + .05f * staminaBackground.getWidth(),
-                staminaBackground.getY() + .1f * staminaBackground.getHeight());
-        maxStaminaWidth = staminaBackground.getWidth() * .9f;
-        stage.addActor(staminaBar);
+        staminaBar = IslandGame.createStaminaBar(stage, atlas.findRegion("StaminaBackground"), atlas.findRegion("GreyStaminaBackground"),
+                atlas.findRegion("StaminaBar"), staminaBarX, staminaBarY, staminaBarWidth, staminaBarHeight);
 
-        //Create grey background to stamina bar
-        staminaBar.validate();
-        Image greyStaminaBackground = new Image(atlas.findRegion("GreyStaminaBackground"));
-        greyStaminaBackground.setPosition(staminaBar.getX(), staminaBar.getY());
-        greyStaminaBackground.setSize(maxStaminaWidth, staminaBar.getHeight());
-        stage.addActor(greyStaminaBackground);
+        Image staminaBackground = staminaBar.getBlackBackground();
 
         //Create level text (uses same font as stamina)
         Label.LabelStyle levelLabelStyle = new Label.LabelStyle();
@@ -250,7 +237,7 @@ public class GameScreen extends AbstractScreen{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         //Set Stamina text
         staminaLabel.setText(staminaString());
-        setStaminaBarWidth();
+        staminaBar.updateStaminaInstantaneous(game);
         stage.draw();
 
 
@@ -345,7 +332,8 @@ public class GameScreen extends AbstractScreen{
     }
 
     private String staminaString() {
-        StringBuilder staminaText = new StringBuilder("Stamina (");
+        StringBuilder staminaText = new StringBuilder(game.getGeneralBundle().get("Stamina"));
+        staminaText.append(" (");
         staminaText.append(game.getPlayer().getStamina());
         staminaText.append("/");
         staminaText.append(game.getPlayer().getMaxStamina());
@@ -353,11 +341,6 @@ public class GameScreen extends AbstractScreen{
         return staminaText.toString();
     }
 
-    private void setStaminaBarWidth() {
-        staminaBar.setWidth((float)game.getPlayer().getStamina() /  (float)game.getPlayer().getMaxStamina()  *
-                maxStaminaWidth);
-        staminaBar.toFront();
-    }
 
     private void addMapViewListener(Actor actor) {
         actor.addListener(new InputListener() {
