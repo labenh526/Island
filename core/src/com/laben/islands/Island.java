@@ -49,7 +49,7 @@ public class Island {
                 List<Integer> orderedRegions = regionsOrderedBySize(numMap);
                 //Step 2: Assign specific regions
                 Map<Integer, Region> regionIntegerConversionChart = Region.generatedRegions(level, orderedRegions, regionAdjacencies);
-                iterableRegionMap = new IterableRegionMap(numMap, regionIntegerConversionChart);
+                iterableRegionMap = new IterableRegionMap(numMap, regionIntegerConversionChart, tileSet);
                 successfulMapGenerated = true;
             } catch (RuntimeException e) {
                 successfulMapGenerated = false;
@@ -292,9 +292,11 @@ public class Island {
         private final int numColumns;
         private final int[][] numericalMap;
         private final Map<Integer, Region> regionIntegerConversionChart;
+        private final Tile[][] tileSet;
 
-        IterableRegionMap(int[][] mapData, Map<Integer, Region> regionIntegerConversionChart) {
+        private IterableRegionMap(int[][] mapData, Map<Integer, Region> regionIntegerConversionChart, Tile[][] tileSet) {
             numericalMap = mapData;
+            this.tileSet = tileSet;
             this.regionIntegerConversionChart = regionIntegerConversionChart;
             numRows = mapData[0].length;
             numColumns = mapData.length;
@@ -306,6 +308,7 @@ public class Island {
                     currentRow.add(regionIntegerConversionChart.get(mapData[x][y]));
                 rowList.add(currentRow);
             }
+
         }
 
         public int[][] getNumericalMap() {
@@ -329,6 +332,39 @@ public class Island {
             return rowList.iterator();
         }
 
+        public Iterator<Tile> tileIterator() {
+            return new Iterator<Tile>() {
+                int x = 0;
+                int y = 0;
+
+                @Override
+                public boolean hasNext() {
+                    int nextY = y + 1;
+                    int nextX = x;
+                    if (nextY >= tileSet[0].length) {
+                        nextY = 0;
+                        nextX++;
+                    }
+                    return nextX < tileSet.length && nextY < tileSet[0].length;
+                }
+
+                @Override
+                public Tile next() {
+                    Tile tile = tileSet[x][y];
+                    y++;
+                    if (y >= tileSet[0].length) {
+                        y = 0;
+                        x++;
+                    }
+                    return tile;
+                }
+
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException();
+                }
+            };
+        }
 
     }
 

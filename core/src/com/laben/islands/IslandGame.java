@@ -21,6 +21,7 @@ import com.laben.islands.items.Item;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /** This Class is the main game class which manages the game and is created upon the games initialization
  * 	This class contains all information pertaining to the game's current game state
@@ -70,17 +71,13 @@ public class IslandGame extends Game {
 		setCurrentLevel(76);
 		setCurrentIsland(new Island(getCurrentLevel()));
 		setStartingPos();
-		player.addItemToInventory(Item.masterItemSet.get(1), 10);
-		player.addItemToInventory(Item.masterItemSet.get(0));
-		player.addItemToInventory(Item.masterItemSet.get(2), 3);
-		player.addItemToInventory(Item.masterItemSet.get(0), 7);
-		player.addItemToInventory(Item.masterItemSet.get(3), 1);
-		player.addItemToInventory(Item.masterItemSet.get(4), 11);
-		player.addItemToInventory(Item.masterItemSet.get(5), 2);
-		player.addItemToInventory(Item.masterItemSet.get(6));
-		player.addItemToInventory(Item.masterItemSet.get(7), 19);
-		player.addItemToInventory(Item.masterItemSet.get(8), 2);
-		player.addItemToInventory(Item.masterItemSet.get(9));
+
+		Random itemRand = new Random();
+		for (Item item : Item.masterItemSet) {
+			getPlayer().addItemToInventory(item, itemRand.nextInt(10) + 1);
+		}
+
+
 		//setScreen(new InventoryScreen(this));
 		setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
 
@@ -105,7 +102,6 @@ public class IslandGame extends Game {
 		super.render();
 		if (currentInput != null && (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)))
 			finishDisplayingTextBox();
-
 	}
 	
 	@Override

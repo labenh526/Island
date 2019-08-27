@@ -3,79 +3,121 @@ ItemTextures.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+BlackDiamond
+  rotate: false
+  xy: 1, 133
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 Bread
   rotate: false
-  xy: 1, 1
+  xy: 1, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 BreadCrumbs
   rotate: false
-  xy: 67, 1
+  xy: 67, 133
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Diamond
+  rotate: false
+  xy: 1, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 Empty
   rotate: false
-  xy: 133, 1
+  xy: 67, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 GoldenNectar
   rotate: false
-  xy: 199, 1
+  xy: 133, 133
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 GoldenSerum
   rotate: false
-  xy: 265, 1
+  xy: 67, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 HeavensNectar
   rotate: false
-  xy: 331, 1
+  xy: 133, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 MagicBread
   rotate: false
-  xy: 397, 1
+  xy: 199, 133
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 MythicSerum
   rotate: false
-  xy: 463, 1
+  xy: 133, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 Nectar
   rotate: false
-  xy: 529, 1
+  xy: 199, 67
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+Ruby
+  rotate: false
+  xy: 265, 133
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+SeaGlass
+  rotate: false
+  xy: 199, 1
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 StaminaSerum
   rotate: false
-  xy: 595, 1
+  xy: 265, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 SuperSerum
   rotate: false
-  xy: 661, 1
+  xy: 331, 133
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+WarpScroll
+  rotate: false
+  xy: 265, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+WarpStone
+  rotate: false
+  xy: 331, 67
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
