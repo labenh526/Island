@@ -218,6 +218,17 @@ public class GameScreen extends AbstractScreen{
             }
         });
 
+        //Add treasure
+        if (game.getCurrentTile().hasTreasure()) {
+            float treasureSideSize = gameTable.getWidth() / 5f;
+            float treasureX = gameTable.getX() + treasureSideSize * 2f;
+            float treasureY = gameTable.getY() + treasureSideSize * 3f;
+            Image treasure = new Image(atlas.findRegion("Treasure"));
+            treasure.setPosition(treasureX, treasureY);
+            treasure.setSize(treasureSideSize, treasureSideSize);
+            stage.addActor(treasure);
+        }
+
     }
 
 

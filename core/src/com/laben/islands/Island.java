@@ -62,6 +62,15 @@ public class Island {
                         getIterableRegionMap().getNumericalMap()[x][y]), this, new GridPoint2(x, y), level);
             }
         }
+        //Randomly set treasure location
+        GridPoint2 illegalLocation = new GridPoint2((width - 1)/ 2, height - 1);
+        GridPoint2 newTreasureLocation = new GridPoint2();
+        Random random = new Random();
+        do {
+            newTreasureLocation.set(random.nextInt(width), random.nextInt(height));
+        } while(newTreasureLocation.equals(illegalLocation));
+        treasureLocation = newTreasureLocation;
+        tileAtPoint(newTreasureLocation).setHasTreasure(true);
 
     }
 
@@ -272,16 +281,6 @@ public class Island {
     }
 
 
-
-
-    //TODO: Delete this. This is for testing only
-    public static void main(String[] args) {
-        int[][] map = mapWithNumericRegions(20, 20, 20);
-        Map<Integer, Region> regionChart = Region.generatedRegions(35, regionsOrderedBySize(map),
-                allAdjacentRegionsInNumericMap(map));
-        System.out.print(regionChart);
-
-    }
 
     //Represents all data of the map in numerical form for easy iteration through the map's rows
     public static class IterableRegionMap implements Iterable<List<Region>>{
