@@ -69,6 +69,7 @@ public class IslandGame extends Game {
 		player = new Player();
 		player.setStamina(1);
 		setCurrentLevel(69);
+
 		setCurrentIsland(new Island(getCurrentLevel()));
 		setStartingPos();
 
