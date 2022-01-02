@@ -1,0 +1,82 @@
+
+MapViewTextures.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+reddot
+  rotate: false
+  xy: 1, 199
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+backarrow
+  rotate: false
+  xy: 1, 69
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+backomap
+  rotate: false
+  xy: 259, 343
+  size: 112, 112
+  orig: 112, 112
+  offset: 0, 0
+  index: -1
+Desert
+  rotate: false
+  xy: 1, 35
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Jungle
+  rotate: false
+  xy: 131, 165
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Plains
+  rotate: false
+  xy: 259, 309
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Swamp
+  rotate: false
+  xy: 373, 423
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Tundra
+  rotate: false
+  xy: 1, 1
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+Woods
+  rotate: false
+  xy: 35, 35
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+RegionOutlineHorizontal
+  rotate: false
+  xy: 131, 158
+  size: 32, 5
+  orig: 32, 5
+  offset: 0, 0
+  index: -1
+RegionOutlineVertical
+  rotate: false
+  xy: 165, 165
+  size: 5, 32
+  orig: 5, 32
+  offset: 0, 0
+  index: -1

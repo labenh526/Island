@@ -1,0 +1,54 @@
+
+InventoryScreenTextures.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ListBox
+  rotate: false
+  xy: 1, 99
+  size: 175, 150
+  orig: 175, 150
+  offset: 0, 0
+  index: -1
+DescBox
+  rotate: false
+  xy: 1, 1
+  size: 112, 96
+  orig: 112, 96
+  offset: 0, 0
+  index: -1
+LeftButton
+  rotate: false
+  xy: 178, 185
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+RightButton
+  rotate: false
+  xy: 178, 119
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+SortButton
+  rotate: false
+  xy: 115, 33
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+UseButton
+  rotate: false
+  xy: 181, 69
+  size: 64, 48
+  orig: 64, 48
+  offset: 0, 0
+  index: -1
+SelectedLabel
+  rotate: false
+  xy: 115, 15
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
