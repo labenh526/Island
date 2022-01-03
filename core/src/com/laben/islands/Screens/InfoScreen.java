@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.laben.islands.IslandGame;
+import com.strongjoshua.console.Console;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -165,7 +166,8 @@ public abstract class InfoScreen extends AbstractScreen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.E) &&
                         Gdx.input.isKeyPressed(Input.Keys.V)) {
-                    getGame().setDevMode(true);
+                    dispose();
+                    getGame().setScreen(new ConsoleScreen(getGame()));
                 } else {
                     dispose();
                     getGame().setScreen(new GameScreen(getGame(), getGame().getCurrentTile()));
