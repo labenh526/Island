@@ -6,6 +6,8 @@ import com.laben.islands.Region;
 import com.laben.islands.Tile;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**All items extend from this class**/
 public class Item implements Comparable<Item>{
@@ -24,26 +26,24 @@ public class Item implements Comparable<Item>{
         itemSortOrder.put(ItemType.Warp, 3);
         itemSortOrder.put(ItemType.Valuable, 4);
 
-        masterItemSet = new ArrayList<>(50);
-        masterItemSet.add(new Item("BreadCrumbs", 1, new HealStamina(1), ItemType.Heal));
-        masterItemSet.add(new Item("Bread", 5, new HealStamina(5), ItemType.Heal));
-        masterItemSet.add(new Item("MagicBread", 35, new HealStamina(20), ItemType.Heal));
-        masterItemSet.add(new Item("StaminaSerum", 12, new HealStaminaPercent(.25), ItemType.HealPercent));
-        masterItemSet.add(new Item("SuperSerum", 50, new HealStaminaPercent(.5), ItemType.HealPercent));
-        masterItemSet.add(new Item("GoldenSerum", 91, new HealStaminaPercent(.75), ItemType.HealPercent));
-        masterItemSet.add(new Item("MythicSerum", 124, new HealStaminaPercent(1.0), ItemType.HealPercent));
-        masterItemSet.add(new Item("Nectar", 127, new BuffMaxStamina(1), ItemType.BuffStamina));
-        masterItemSet.add(new Item("GoldenNectar", 178, new BuffMaxStamina(2), ItemType.BuffStamina));
-        masterItemSet.add(new Item("HeavensNectar", 300, new BuffMaxStamina(5), ItemType.BuffStamina));
-        masterItemSet.add(new Item("SeaGlass", 75, new NoEffect(), ItemType.Valuable));
-        masterItemSet.add(new Item("Ruby", 150, new NoEffect(), ItemType.Valuable));
-        masterItemSet.add(new Item("Diamond", 250, new NoEffect(), ItemType.Valuable));
-        masterItemSet.add(new Item("BlackDiamond", 500, new NoEffect(), ItemType.Valuable));
-        masterItemSet.add(new Item("WarpStone", 11, new WarpAnywhere(), ItemType.Warp));
-        masterItemSet.add(new Item("WarpScroll", 15, new WarpAnywhereInRegion(), ItemType.Warp));
-
-
-
+        masterItemSet = Stream.of(
+            new Item("BreadCrumbs", 1, new HealStamina(1), ItemType.Heal),
+            new Item("Bread", 5, new HealStamina(5), ItemType.Heal),
+            new Item("MagicBread", 35, new HealStamina(20), ItemType.Heal),
+            new Item("StaminaSerum", 12, new HealStaminaPercent(.25), ItemType.HealPercent),
+            new Item("SuperSerum", 50, new HealStaminaPercent(.5), ItemType.HealPercent),
+            new Item("GoldenSerum", 91, new HealStaminaPercent(.75), ItemType.HealPercent),
+            new Item("MythicSerum", 124, new HealStaminaPercent(1.0), ItemType.HealPercent),
+            new Item("Nectar", 127, new BuffMaxStamina(1), ItemType.BuffStamina),
+            new Item("GoldenNectar", 178, new BuffMaxStamina(2), ItemType.BuffStamina),
+            new Item("HeavensNectar", 300, new BuffMaxStamina(5), ItemType.BuffStamina),
+            new Item("SeaGlass", 75, new NoEffect(), ItemType.Valuable),
+            new Item("Ruby", 150, new NoEffect(), ItemType.Valuable),
+            new Item("Diamond", 250, new NoEffect(), ItemType.Valuable),
+            new Item("BlackDiamond", 500, new NoEffect(), ItemType.Valuable),
+            new Item("WarpStone", 11, new WarpAnywhere(), ItemType.Warp),
+            new Item("WarpScroll", 15, new WarpAnywhereInRegion(), ItemType.Warp))
+            .collect(Collectors.toList());
     }
 
 

@@ -1,0 +1,28 @@
+{
+  "Color": {
+    "white": { "r": 1, "g": 1, "b": 1, "a": 1 }
+  },
+  "BitmapFont": {
+    "default-font": {"file": "Fonts/ConsoleFont.fnt", "scaledSize": -1}
+  },
+  "LabelStyle": {
+    "default": {
+      "font": "default-font",
+      "fontColor": "white"
+    }
+  },
+
+  "TextFieldStyle": {
+    "default": { "selection": "Black", "background": "Grey", "font": "default-font", "fontColor": "white", "cursor": "Cursor" }
+  },
+  "WindowStyle": {
+    "default": {
+      "titleFont": "default-font",
+      "background": "Black",
+      "titleFontColor": "white"
+    }
+  },
+  "TextButtonStyle": {
+    "default": { "up":"Black", "down":"Grey", "checked":"Grey", "fontColor": "white"}
+  }
+}

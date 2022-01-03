@@ -1,6 +1,7 @@
 package com.laben.islands.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -37,7 +38,7 @@ public abstract class InfoScreen extends AbstractScreen {
     public InfoScreen(final IslandGame game, final ScreenType screenType, Map<String, Class> assetMap) {
         this.game = game;
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
-        Gdx.input.setInputProcessor(stage);
+        setInputProcessor(game, stage);
 
 
         assets = new HashMap<>(assetMap);
@@ -162,8 +163,13 @@ public abstract class InfoScreen extends AbstractScreen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                dispose();
-                getGame().setScreen(new GameScreen(getGame(), getGame().getCurrentTile()));
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.E) &&
+                        Gdx.input.isKeyPressed(Input.Keys.V)) {
+                    getGame().setDevMode(!getGame().isDevMode());
+                } else {
+                    dispose();
+                    getGame().setScreen(new GameScreen(getGame(), getGame().getCurrentTile()));
+                }
             }
         });
 
@@ -194,7 +200,7 @@ public abstract class InfoScreen extends AbstractScreen {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        setInputProcessor(game, stage);
     }
 
     @Override
@@ -205,7 +211,6 @@ public abstract class InfoScreen extends AbstractScreen {
         staminaBar.updateStaminaInstantaneous(game);
         updateStaminaText();
         stage.draw();
-
     }
 
     @Override

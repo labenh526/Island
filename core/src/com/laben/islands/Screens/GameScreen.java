@@ -43,7 +43,8 @@ public class GameScreen extends AbstractScreen{
         this.game = game;
         this.tile = tile;
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
-        Gdx.input.setInputProcessor(stage);
+        setInputProcessor(game, stage);
+
 
         //Load assets
         assets = new HashMap<>();
@@ -234,7 +235,7 @@ public class GameScreen extends AbstractScreen{
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        setInputProcessor(game, stage);
     }
 
     @Override

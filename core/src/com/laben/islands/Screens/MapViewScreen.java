@@ -53,7 +53,7 @@ public class MapViewScreen extends AbstractScreen {
 
         this.game = game;
         stage = new Stage(new FitViewport(IslandGame.getGameWidth(), IslandGame.getGameHeight()));
-        Gdx.input.setInputProcessor(stage);
+        setInputProcessor(game, stage);
         //Add map background
         Image mapBackground = new Image(atlas.findRegion("backomap"));
         mapBackground.setPosition((0.02f * (float)IslandGame.GAME_WIDTH), (float)(.2/6.0 * (float)IslandGame.GAME_HEIGHT));
