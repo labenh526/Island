@@ -12,6 +12,5 @@ public abstract class AbstractScreen implements Screen {
 
     protected void setInputProcessor(IslandGame game, Stage stage) {
         Gdx.input.setInputProcessor(stage);
-        game.resetConsoleInputProcessing();
     }
 }

@@ -165,7 +165,7 @@ public abstract class InfoScreen extends AbstractScreen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.E) &&
                         Gdx.input.isKeyPressed(Input.Keys.V)) {
-                    getGame().setDevMode(!getGame().isDevMode());
+                    getGame().setDevMode(true);
                 } else {
                     dispose();
                     getGame().setScreen(new GameScreen(getGame(), getGame().getCurrentTile()));

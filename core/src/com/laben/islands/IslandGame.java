@@ -2,32 +2,26 @@ package com.laben.islands;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.laben.islands.Screens.*;
 import com.laben.islands.Screens.GameScreen;
 import com.laben.islands.Screens.MapViewScreen;
 import com.laben.islands.items.Item;
-import com.strongjoshua.console.Console;
-import com.strongjoshua.console.GUIConsole;
 
-import java.awt.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /** This Class is the main game class which manages the game and is created upon the games initialization
  * 	This class contains all information pertaining to the game's current game state
@@ -36,12 +30,6 @@ public class IslandGame extends Game {
 	//Desktop Aspect Ratio 800:480, Android Aspect Ratio 480:640
 	public static int GAME_WIDTH = 800;
 	public static int GAME_HEIGHT = 480;
-
-	//Developer tools
-	private final int CONSOLE_KEY = Input.Keys.Z;
-	private boolean isDevMode = false;
-	private Console console;
-	private Skin consoleSkin;
 
 	private Island currentIsland;
 	private int currentLevel;
@@ -70,20 +58,17 @@ public class IslandGame extends Game {
 		GAME_HEIGHT = Application.ApplicationType.Android.equals(Gdx.app.getType()) ? 640 : 480;
 
 		inputAllowed = true;
-		manager = new AssetManager();
 
+		manager = new AssetManager();
 		assets = new HashMap<>();
 		assets.put("i18n/GeneralBundle", I18NBundle.class);
 		assets.put("GeneralTextures.atlas", TextureAtlas.class);
 		assets.put("Fonts/TextBox.fnt", BitmapFont.class);
-		assets.put("Fonts/ConsoleFont.fnt", BitmapFont.class);
 		loadAllAssets(manager, assets);
-
-		//--- Code to execute while loading assets ---
 		//create player
 		player = new Player();
-		setCurrentLevel(1);
-
+		player.setStamina(1);
+		setCurrentLevel(69);
 		setCurrentIsland(new Island(getCurrentLevel()));
 		setStartingPos();
 
@@ -92,26 +77,12 @@ public class IslandGame extends Game {
 			getPlayer().addItemToInventory(item, itemRand.nextInt(10) + 1);
 		}
 
-		manager.finishLoading();
-		//--- Everything requiring loaded assets below this ---
-		atlas = manager.get("GeneralTextures.atlas");
-
-		consoleSkin = new Skin(new FileHandle("ConsoleSkin.json"), atlas);
-		manager.finishLoading();
-		consoleSkin.add("default-rect", new TextureRegion(atlas.findRegion("Black")));
-		consoleSkin.add("default", new TextButton.TextButtonStyle(new TextureRegionDrawable(atlas.findRegion("Black")), new TextureRegionDrawable(atlas.findRegion("Black")), new TextureRegionDrawable(atlas.findRegion("Black")), manager.get("Fonts/ConsoleFont.fnt")));
-		console = new GUIConsole(consoleSkin);
-		console.setDisabled(!isDevMode);
-		console.setSizePercent(100,90);
-		console.setPositionPercent(0, 67);
-		console.setDisplayKeyID(Input.Keys.UNKNOWN);
-		console.setCommandExecutor(new IslandCommandExecutor(this));
-		console.setPosition(0, 0);
-		console.setTitle("Developer Console");
 
 		//setScreen(new InventoryScreen(this));
 		setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
 
+		manager.finishLoading();
+		atlas = manager.get("GeneralTextures.atlas");
 
 		//For TextBox
 		textStyle = new Label.LabelStyle();
@@ -131,13 +102,11 @@ public class IslandGame extends Game {
 		super.render();
 		if (currentInput != null && (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)))
 			finishDisplayingTextBox();
-		console.draw();
 	}
 	
 	@Override
 	public void dispose () {
 		getScreen().dispose(); //dispose of all disposables in the current screen
-		console.dispose();
 		unloadAllAssets(manager, assets.keySet());
 	}
 
@@ -203,25 +172,8 @@ public class IslandGame extends Game {
 		return platform;
 	}
 
-	public void resetConsoleInputProcessing() {
-		console.resetInputProcessing();
-	}
-
 	public void setDevMode(boolean on) {
-		isDevMode = on;
-		setInputAllowed(!on);
-		console.setDisabled(!on);
-		if (on) {
-			greyOutBackground();
-			console.log("'help' for list of commands");
-			console.log("'exit' to exit the developer console");
-		} else
-			grey.remove();
-		console.setVisible(on);
-	}
 
-	public boolean isDevMode() {
-		return isDevMode;
 	}
 
 	/* Since this application's target platform is only desktop and android, this method can be used to determine
@@ -266,9 +218,11 @@ public class IslandGame extends Game {
 		setInputAllowed(false);
 		currentInput = Gdx.input.getInputProcessor();
 		Gdx.input.setInputProcessor(null);
-		resetConsoleInputProcessing();
 		//Grey out
-		greyOutBackground();
+		grey = new Image(atlas.findRegion("Grey"));
+		grey.setPosition(0, 0);
+		grey.setSize(getGameWidth(), getGameHeight());
+		currentStage.addActor(grey);
 		//Add text box
 		textBox = new Image(atlas.findRegion("TextBox"));
 		textBox.setSize(getGameWidth(), (float)getGameHeight() / 3f);
@@ -284,14 +238,6 @@ public class IslandGame extends Game {
 				textBox.getY() + textBox.getHeight() * 4f / 160f);
 		text.setAlignment(Align.topLeft);
 		currentStage.addActor(text);
-	}
-
-	//Greys out the background for use with things like text box and console
-	private void greyOutBackground() {
-		grey = new Image(atlas.findRegion("Grey"));
-		grey.setPosition(0, 0);
-		grey.setSize(getGameWidth(), getGameHeight());
-		currentStage.addActor(grey);
 	}
 
 	//Draws a stamina bar to the current stage. Returns the stamina bar object
@@ -322,7 +268,6 @@ public class IslandGame extends Game {
 
 	private void finishDisplayingTextBox() {
 		Gdx.input.setInputProcessor(currentInput);
-		resetConsoleInputProcessing();
 		currentInput = null;
 		setInputAllowed(true);
 		grey.remove();
