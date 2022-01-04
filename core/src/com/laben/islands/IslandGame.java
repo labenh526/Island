@@ -67,16 +67,7 @@ public class IslandGame extends Game {
 		loadAllAssets(manager, assets);
 		//create player
 		player = new Player();
-		player.setStamina(1);
-		setCurrentLevel(69);
-		setCurrentIsland(new Island(getCurrentLevel()));
-		setStartingPos();
-
-		Random itemRand = new Random();
-		for (Item item : Item.masterItemSet) {
-			getPlayer().addItemToInventory(item, itemRand.nextInt(10) + 1);
-		}
-
+		initializeLevel(1);
 
 		//setScreen(new InventoryScreen(this));
 		setScreen(new com.laben.islands.Screens.GameScreen(this, getCurrentTile()));
@@ -117,6 +108,11 @@ public class IslandGame extends Game {
 		setCurrentTile(getCurrentIsland().tileAtPoint(new GridPoint2(x, y)));
 	}
 
+	public void initializeLevel(int level) {
+		setCurrentLevel(level);
+		setCurrentIsland(new Island(getCurrentLevel()));
+		setStartingPos();
+	}
 
 	public void loadMapViewScreen() {
 		getScreen().dispose();
@@ -211,6 +207,8 @@ public class IslandGame extends Game {
 	public I18NBundle getGeneralBundle() {
 		return manager.get("i18n/GeneralBundle");
 	}
+
+	public TextureAtlas getGeneralAtlas() { return atlas;}
 
 	//Input the key to the text that is displayed
 	public void displayTextBox(String textKey) {

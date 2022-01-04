@@ -56,8 +56,10 @@ public class Player {
 
     //Adds the given number of the specified item to the player's inventory
     public void addItemToInventory(Item item, int quantity) {
-        inventoryInBag.add(item);
-        inventory.put(item, inventory.get(item) + quantity);
+        if (quantity > 0) {
+            inventoryInBag.add(item);
+            inventory.put(item, inventory.get(item) + quantity);
+        }
     }
 
     //Sorts the inventory in the player's bag
