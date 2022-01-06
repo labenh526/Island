@@ -30,6 +30,7 @@ public class IslandGame extends Game {
 	//Desktop Aspect Ratio 800:480, Android Aspect Ratio 480:640
 	public static int GAME_WIDTH = 800;
 	public static int GAME_HEIGHT = 480;
+	public static int TARGET_FPS = 60;
 
 	private Island currentIsland;
 	private int currentLevel;

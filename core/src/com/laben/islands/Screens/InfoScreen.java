@@ -157,15 +157,21 @@ public abstract class InfoScreen extends AbstractScreen {
         stage.addActor(back);
         Class<? extends InfoScreen> thisClass = this.getClass();
         back.addListener(new InputListener(){
+            boolean dev = false;
+
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.E) &&
+                        Gdx.input.isKeyPressed(Input.Keys.V)) {
+                    dev = true;
+                }
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (Gdx.input.isKeyPressed(Input.Keys.D) && Gdx.input.isKeyPressed(Input.Keys.E) &&
-                        Gdx.input.isKeyPressed(Input.Keys.V)) {
+                if (dev && !Gdx.input.isKeyPressed(Input.Keys.D) && !Gdx.input.isKeyPressed(Input.Keys.E) &&
+                        !Gdx.input.isKeyPressed(Input.Keys.V)) {
                     dispose();
                     getGame().setScreen(new ConsoleScreen(getGame(), thisClass));
                 } else {

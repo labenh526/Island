@@ -74,8 +74,10 @@ public class ConsoleScreen extends AbstractScreen{
         //Scrolling console
         consoleTable = new Table();
         pane = new ScrollPane(consoleTable);
-        pane.setScrollingDisabled(false, true);
-        consoleTable.align(Align.bottom);
+        pane.setScrollingDisabled(true, false);
+        pane.setWidth(.9f * IslandGame.getGameWidth());
+
+        consoleTable.align(Align.center).align(Align.bottom).setWidth(.9f * IslandGame.getGameWidth());
         //Input field
         TextField.TextFieldStyle inputFieldStyle = new TextField.TextFieldStyle(consoleFont, Color.WHITE,
                 new TextureRegionDrawable(game.getGeneralAtlas().findRegion("Cursor")), new TextureRegionDrawable(game.getGeneralAtlas().findRegion("Black")),
@@ -88,7 +90,7 @@ public class ConsoleScreen extends AbstractScreen{
         rootTable.row().height(.05f * (float)IslandGame.GAME_HEIGHT);
         rootTable.add(consoleTitleLabel).width(labelWidth).center();
         rootTable.row().height(.8f * (float)IslandGame.GAME_HEIGHT).width(.97f * IslandGame.GAME_WIDTH);
-        rootTable.add(pane).padLeft(.05f * (float)IslandGame.GAME_WIDTH).expand().fill();
+        rootTable.add(pane).height(.8f * (float)IslandGame.GAME_HEIGHT).expand().fill();
         rootTable.row().height(inputField.getHeight());
         rootTable.add(inputField).expand().width(inputField.getWidth()).padBottom(.03f);
         consoleTable.validate();
@@ -102,9 +104,12 @@ public class ConsoleScreen extends AbstractScreen{
             e.printStackTrace();
         }
 
+        stage.setKeyboardFocus(inputField);
+        stage.setScrollFocus(pane);
+
         //log("Warning: It is possible to render the game unusable using this console", Color.YELLOW);
         log("Use at your own risk", Color.YELLOW);
-        log("'help' for list of commands, 'exit' to exit the console");
+        log("'help' for list of commands, 'exit' to exit the console", Color.CYAN);
     }
 
     //Displays input message in console - defaults to white color
@@ -113,17 +118,17 @@ public class ConsoleScreen extends AbstractScreen{
     }
 
     protected void log(String message, Color textColor) {
-        consoleTable.row().expandX();
+        consoleTable.row();
         Label.LabelStyle messageLabelStyle = new Label.LabelStyle();
         messageLabelStyle.font = consoleFont;
         messageLabelStyle.fontColor = textColor;
         Label messageLabel = new Label(message, messageLabelStyle);
-        messageLabel.setSize(consoleTable.getWidth(), consoleTable.getHeight() / 15f);
         messageLabel.setAlignment(Align.left);
         messageLabel.setWrap(true);
         messageLabel.setFontScale(.85f);
-        consoleTable.add(messageLabel).width(Gdx.graphics.getWidth()).bottom();
+        consoleTable.add(messageLabel).width(consoleTable.getWidth()).bottom().left();
         consoleTable.validate();
+        pane.scrollTo(0, 0, 0 , 0);
         pane.validate();
     }
 
@@ -162,6 +167,7 @@ public class ConsoleScreen extends AbstractScreen{
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             enterCurrentCommand();
         }
+        stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
 
@@ -292,23 +298,24 @@ public class ConsoleScreen extends AbstractScreen{
                 }
             }
         }));
-        commands.put("giveitemsrand", new Command("[min] [max] gives player a random quantity between min and max of every item in the game. Values are must be in range 0-999",
+        commands.put("additemsrand", new Command("[min] [max] gives player a random quantity between min and max of every item in the game. Values are must be in range 0-999",
                 (console, params) -> {
                     if (params.length != 3)
-                        console.logParameterNumError("giveitemsrand");
+                        console.logParameterNumError("additemsrand");
                     else {
                         try {
                             Random itemRand = new Random();
                             Player player = console.getGame().getPlayer();
                             int min = Integer.parseInt(params[1]);
                             int max = Integer.parseInt(params[2]);
-                            if (max < min || min < 0 || max > 999)
+                            if (max < min || min < 0 || max > Player.ITEM_LIMIT)
                                 throw new Exception("Input error");
                             for (Item item : Item.masterItemSet) {
-                                player.addItemToInventory(item, min + itemRand.nextInt(max - min + 1));
+                                player.addItemToInventory(item, Math.min(min + itemRand.nextInt(max - min + 1),
+                                        Player.ITEM_LIMIT - player.getInventory().get(item)));
                             }
                         } catch (Exception e) {
-                            console.log("Error with input for command: giveitemsrand", Color.RED);
+                            console.log("Error with input for command: additemsrand", Color.RED);
                             console.log("Ensure max is greater than min and params lie in specified range", Color.RED);
                         }
                     }
@@ -329,7 +336,7 @@ public class ConsoleScreen extends AbstractScreen{
                             player.removeItemFromInventory(item, quantityToRemove);
                         }
                     } else {
-                        Optional<Item> item = Item.masterItemSet.stream().filter(i -> params[1].equalsIgnoreCase(console.itemBundle.get(i.getNameKey()))).findFirst();
+                        Optional<Item> item = Item.masterItemSet.stream().filter(i -> params[1].equalsIgnoreCase(console.itemBundle.get(i.getNameKey()).replaceAll("\\s", ""))).findFirst();
                         if (item.isPresent()) {
                             if (player.getInventory().containsKey(item.get())) {
                                 int quantityToRemove = Math.min(quantity == -1 ? Integer.MAX_VALUE : quantity, player.getInventory().get(item.get()));
@@ -343,5 +350,24 @@ public class ConsoleScreen extends AbstractScreen{
                 }
             }
                 }));
+        commands.put("additem", new Command("[name] [quantity] adds quantity of name to player inventory", (console, params) -> {
+            if (params.length != 3)
+                console.logParameterNumError("additem");
+            else {
+                try {
+                    int quantity = Integer.parseInt(params[2]);
+                    Optional<Item> item = Item.masterItemSet.stream().filter(i -> params[1].equalsIgnoreCase(console.itemBundle.get(i.getNameKey()).replaceAll("\\s",""))).findFirst();
+                    if (item.isPresent()) {
+                        Player player = console.getGame().getPlayer();
+                        int adjustedQuantity = Math.max(0, Math.min(Player.ITEM_LIMIT - player.getInventory().get(item.get()), quantity));
+                        player.addItemToInventory(item.get(), adjustedQuantity);
+                    } else {
+                        console.log("Error: Item " +  params[1] + " does not exist", Color.RED);
+                    }
+                } catch (Exception e) {
+                    console.log("Error with input for command: additem", Color.RED);
+                }
+            }
+        }));
     }
 }

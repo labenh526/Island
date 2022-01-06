@@ -7,6 +7,9 @@ import java.util.*;
 /** This class represents the player and all things to do with the player such as Stamina, equips, etc.
  */
 public class Player {
+
+    public static final int ITEM_LIMIT = 999; //Max of an individual item a player can have in their inventory
+
     private static final int DEFAULT_MAX_STAMINA = 40;
 
     private int maxStamina;
