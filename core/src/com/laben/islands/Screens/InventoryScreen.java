@@ -1,5 +1,6 @@
 package com.laben.islands.Screens;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,6 +16,7 @@ import com.laben.islands.IslandGame;
 import com.laben.islands.items.Item;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InventoryScreen extends InfoScreen{
 
@@ -136,6 +138,70 @@ public class InventoryScreen extends InfoScreen{
         getStage().addActor(rightArrow);
         addInputDetection(rightArrow,  false);
 
+        //Key arrow detection
+        if (pageNum < maxPageNum) {
+            getStage().addListener(new InputListener() {
+                @Override
+                public boolean keyTyped(InputEvent event, char character) {
+                    if (event.getKeyCode() == Input.Keys.LEFT) {
+                        decrementPageNum();
+                        resetInventoryTable();
+                    }
+                    else if (event.getKeyCode() == Input.Keys.RIGHT) {
+                        incrementPageNum();
+                        resetInventoryTable();
+                    }
+                    return true;
+                }
+            });
+        }
+        getStage().addListener(new InputListener() {
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                if (event.getKeyCode() == Input.Keys.UP && !getGame().getPlayer().getInventoryInBag().isEmpty()) {
+                    if (currentlySelectedItem == null)
+                        setCurrentlySelectedItem(new ArrayList<>(getGame().getPlayer().getInventoryInBag()).get(pageNum * PAGE_LENGTH));
+                    else {
+                        int startItemPos = pageNum * PAGE_LENGTH;
+                        int endItemPage = Math.min((pageNum + 1) * PAGE_LENGTH, getGame().getPlayer().getInventoryInBag().size());
+                        List<Item> sublist = new ArrayList<>(getGame().getPlayer().getInventoryInBag()).subList(startItemPos, endItemPage);
+                        Collections.reverse(sublist);
+                        Item newSelection = sublist.get(0);
+                        boolean next = false;
+                        for (Item item : sublist) {
+                            if (next) {
+                                newSelection = item;
+                                next = false;
+                            } else if (item.equals(currentlySelectedItem))
+                                next = true;
+                        }
+                        setCurrentlySelectedItem(newSelection);
+                    }
+                    resetInventoryTable();
+                } else if (event.getKeyCode() == Input.Keys.DOWN && !getGame().getPlayer().getInventoryInBag().isEmpty()) {
+                    if (currentlySelectedItem == null)
+                        setCurrentlySelectedItem(new ArrayList<>(getGame().getPlayer().getInventoryInBag()).get(pageNum * PAGE_LENGTH));
+                    else {
+                        int startItemPos = pageNum * PAGE_LENGTH;
+                        int endItemPage = Math.min((pageNum + 1) * PAGE_LENGTH, getGame().getPlayer().getInventoryInBag().size());
+                        List<Item> sublist = new ArrayList<>(getGame().getPlayer().getInventoryInBag()).subList(startItemPos, endItemPage);
+                        Item newSelection = sublist.get(0);
+                        boolean next = false;
+                        for (Item item : sublist) {
+                            if (next) {
+                                newSelection = item;
+                                next = false;
+                            } else if (item.equals(currentlySelectedItem))
+                                next = true;
+                        }
+                        setCurrentlySelectedItem(newSelection);
+                    }
+                    resetInventoryTable();
+                }
+                return true;
+            }
+        });
+
         //Add page number label
         final float pageLabelWidth = listBoxWidth;
         final float pageLabelHeight = listBoxHeight * .1f;
@@ -242,6 +308,8 @@ public class InventoryScreen extends InfoScreen{
         valueLabel.setFontScale(.4f);
         getStage().addActor(valueLabel);
 
+       // getStage().setDebugAll(true);
+
     }
 
     public Table inventoryTable(float width, float height, float xpos, float ypos) {
@@ -312,8 +380,9 @@ public class InventoryScreen extends InfoScreen{
     }
 
     private void addInputDetection(Image arrow, final boolean left) {
-        if (pageNum != maxPageNum) {
+        if (pageNum < maxPageNum) {
             arrow.addListener(new InputListener() {
+
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     return true;
@@ -328,6 +397,7 @@ public class InventoryScreen extends InfoScreen{
                     //Re-add inventory table
                     resetInventoryTable();
                 }
+
             });
         }
     }
